@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
 public class Product {
 
     @Id
@@ -20,8 +21,9 @@ public class Product {
     @NotNull
     private double price;
 
-    @Column(name = "category_id")
-    private UUID categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "stock_quantity")
     private int stockQuantity;
@@ -30,4 +32,6 @@ public class Product {
     @CollectionTable(name = "product_custom_fields", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "field_name")
     private List<String> customizableFields;
+    
+
 }
