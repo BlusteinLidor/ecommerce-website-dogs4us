@@ -16,13 +16,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http)
             throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers(
-                "/h2-console/**").disable())
+        http.csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(basic -> {
                 })
