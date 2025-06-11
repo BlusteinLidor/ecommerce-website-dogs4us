@@ -17,5 +17,38 @@ public class OrderItem {
     @NotNull
     private double unitPrice;
 
-    private Object customizationReference;
+    private String customizationReference;
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public OrderItemId getId() {
+        return id;
+    }
+
+    public void setId(OrderItemId id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getCustomizationReference() {
+        return customizationReference;
+    }
+
+    public void setCustomizationReference(String customizationReference) {
+        this.customizationReference = customizationReference;
+    }
+
 }

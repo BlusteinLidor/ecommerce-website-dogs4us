@@ -14,6 +14,30 @@ public class CartItem {
     private int quantity;
 
     @Column(name = "customization_preview")
-    private Object customizationPreview;
+    private String customizationPreview;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public CartItemId getId() {
+        return id;
+    }
+
+    public void setId(CartItemId id) {
+        this.id = id;
+    }
+
+    public String getCustomizationPreview() {
+        return customizationPreview;
+    }
+
+    public void setCustomizationPreview(String customizationPreview) {
+        this.customizationPreview = customizationPreview;
+    }
 
 }
