@@ -1,0 +1,9 @@
+### PUT request to update an existing user entity
+PUT http://localhost:4000/users/123e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "name": "Lidor",
+  "email": "john.doe@example.com",
+  "password": "12345678"
+}

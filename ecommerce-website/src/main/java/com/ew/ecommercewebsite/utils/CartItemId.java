@@ -1,6 +1,8 @@
 package com.ew.ecommercewebsite.utils;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.OneToMany;
 
 import java.io.Serializable;
 import java.util.Objects;
