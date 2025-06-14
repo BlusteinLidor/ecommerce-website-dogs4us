@@ -12,11 +12,11 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository){
+    public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
-    public List<ProductResponseDTO> getProduct(){
+    public List<ProductResponseDTO> getProducts() {
         List<Product> products = productRepository.findAll();
 
         List<ProductResponseDTO> productResponseDTOs = products.stream()
