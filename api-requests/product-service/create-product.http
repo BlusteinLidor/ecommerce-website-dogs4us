@@ -1,0 +1,14 @@
+### POST request to create a new product
+POST http://localhost:4000/products
+Content-Type: application/json
+
+{
+    "name": "Customizable Dog Bowl",
+    "description": "",
+    "price": "19.99",
+    "category": "Dog Bowls",
+    "stockQuantity": "20",
+    "customizableFields": ["Name"]
+  }
+
+###

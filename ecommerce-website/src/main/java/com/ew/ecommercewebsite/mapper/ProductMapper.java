@@ -4,6 +4,7 @@ import com.ew.ecommercewebsite.dto.ProductRequestDTO;
 import com.ew.ecommercewebsite.dto.ProductResponseDTO;
 import com.ew.ecommercewebsite.dto.UserRequestDTO;
 import com.ew.ecommercewebsite.dto.UserResponseDTO;
+import com.ew.ecommercewebsite.model.Category;
 import com.ew.ecommercewebsite.model.Product;
 import com.ew.ecommercewebsite.model.User;
 
@@ -26,9 +27,19 @@ public class ProductMapper {
         Product product = new Product();
         product.setName(productRequestDTO.getName());
         product.setDescription(productRequestDTO.getDescription());
-        product.setPrice(productRequestDTO.getPrice());
-        product.setCategory(productRequestDTO.getCategory());
-        product.setStockQuantity(productRequestDTO.getStockQuantity());
+
+        try {
+            product.setPrice(Double.parseDouble(productRequestDTO.getPrice()));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid price format: " + productRequestDTO.getPrice());
+        }
+
+        try {
+            product.setStockQuantity(Integer.parseInt(productRequestDTO.getStockQuantity()));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid stock quantity format: " + productRequestDTO.getStockQuantity());
+        }
+
         product.setCustomizableFields(productRequestDTO.getCustomizableFields());
 
         return product;

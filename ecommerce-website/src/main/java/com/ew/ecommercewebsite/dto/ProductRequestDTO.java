@@ -16,11 +16,11 @@ public class ProductRequestDTO {
     private String description;
 
     @NotBlank(message = "Price is required")
-    private double price;
+    private String price;
 
-    private Category category;
+    private String category;
 
-    private int stockQuantity;
+    private String stockQuantity;
 
     private List<String> customizableFields;
 
@@ -40,27 +40,27 @@ public class ProductRequestDTO {
         this.description = description;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public int getStockQuantity() {
+    public String getStockQuantity() {
         return stockQuantity;
     }
 
-    public void setStockQuantity(int stockQuantity) {
+    public void setStockQuantity(String stockQuantity) {
         this.stockQuantity = stockQuantity;
     }
 

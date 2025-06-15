@@ -42,4 +42,28 @@ public class GlobalExceptionHandler {
         errors.put("message", "User not found by ID");
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFoundException(CategoryNotFoundException ex){
+        log.warn("Category not found {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Category not found by ID");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(CategoryNotEmptyException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotEmptyException(CategoryNotEmptyException ex){
+        log.warn("Category not empty {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Category is not empty, please delete all products in this category");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleProductNotFoundException(ProductNotFoundException ex){
+        log.warn("Product not found {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Product not found by ID");
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

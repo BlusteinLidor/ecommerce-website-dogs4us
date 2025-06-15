@@ -52,7 +52,8 @@ public class UserService {
     }
 
     public UserResponseDTO updateUser(UUID id, UserRequestDTO userRequestDTO) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("User not found with ID: " + id));
 
         if (userRepository.existsByEmailAndIdNot(userRequestDTO.getEmail(), id)) {
             throw new EmailAlreadyExistsException("A user with this email already exists "

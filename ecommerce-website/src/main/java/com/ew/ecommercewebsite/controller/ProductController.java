@@ -1,6 +1,7 @@
 package com.ew.ecommercewebsite.controller;
 
 
+import com.ew.ecommercewebsite.dto.ProductRequestDTO;
 import com.ew.ecommercewebsite.dto.ProductResponseDTO;
 import com.ew.ecommercewebsite.dto.UserRequestDTO;
 import com.ew.ecommercewebsite.dto.UserResponseDTO;
@@ -29,6 +30,26 @@ public class ProductController {
     public ResponseEntity<List<ProductResponseDTO>> getProducts() {
         List<ProductResponseDTO> products = productService.getProducts();
         return ResponseEntity.ok().body(products);
+    }
+
+    @PostMapping
+    public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductRequestDTO productRequestDTO) {
+        ProductResponseDTO productResponseDTO = productService.createProduct(productRequestDTO);
+
+        return ResponseEntity.ok().body(productResponseDTO);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable UUID id, @Validated({Default.class}) @RequestBody ProductRequestDTO productRequestDTO) {
+        ProductResponseDTO productResponseDTO = productService.updateProduct(id, productRequestDTO);
+
+        return ResponseEntity.ok().body(productResponseDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id){
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
