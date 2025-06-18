@@ -1,0 +1,11 @@
+### POST request to create a new cart item
+POST http://localhost:4000/cart-items
+Content-Type: application/json
+
+{
+  "userId": "123e4567-e89b-12d3-a456-426614174000",
+  "productId": "423e4567-e89b-12d3-a456-426614174000",
+  "quantity": "5",
+  "customizationPreview": ""
+}
+###

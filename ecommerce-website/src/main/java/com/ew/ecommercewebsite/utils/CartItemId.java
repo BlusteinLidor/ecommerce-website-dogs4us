@@ -1,8 +1,6 @@
 package com.ew.ecommercewebsite.utils;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -32,5 +30,21 @@ public class CartItemId implements Serializable {
 
     public int hashCode(){
         return Objects.hash(this.userId, this.productId);
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public UUID getProductId() {
+        return productId;
+    }
+
+    public void setProductId(UUID productId) {
+        this.productId = productId;
     }
 }

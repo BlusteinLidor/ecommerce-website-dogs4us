@@ -66,4 +66,36 @@ public class GlobalExceptionHandler {
         errors.put("message", "Product not found by ID");
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(OrderItemIdAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleOrderItemIdAlreadyExistsException(OrderItemIdAlreadyExistsException ex){
+        log.warn("Order item ID already exists {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Order item ID already exists");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(OrderItemNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleOrderItemNotFoundException(OrderItemNotFoundException ex){
+        log.warn("Order item not found {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Order item not found by ID");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(CartItemIdAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleCartItemIdAlreadyExistsException(CartItemIdAlreadyExistsException ex){
+        log.warn("Cart item ID already exists {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Cart item ID already exists");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCartItemNotFoundException(CartItemNotFoundException ex){
+        log.warn("Cart item not found {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Cart item not found by ID");
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

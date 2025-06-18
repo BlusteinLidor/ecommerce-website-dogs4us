@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemId> {
     void deleteByIdProductId(UUID productId);
+    boolean existsByIdProductId(UUID productId);
+    boolean existsByIdOrderId(UUID orderId);
 }

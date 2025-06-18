@@ -1,0 +1,11 @@
+### PUT request to update an order item
+PUT http://localhost:4000/order-items/orderId/223e4567-e89b-12d3-a456-426614174000/productId/423e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "quantity": "10",
+  "unitPrice": "59.99",
+  "customizationReference": ""
+}
+
+###

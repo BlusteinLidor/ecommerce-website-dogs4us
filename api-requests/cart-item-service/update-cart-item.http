@@ -1,0 +1,10 @@
+### PUT request to update an cart item
+PUT http://localhost:4000/cart-items/userId/123e4567-e89b-12d3-a456-426614174000/productId/423e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "quantity": "10",
+  "customizationPreview": ""
+}
+
+###
