@@ -98,4 +98,20 @@ public class GlobalExceptionHandler {
         errors.put("message", "Cart item not found by ID");
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleOrderNotFoundException(OrderNotFoundException ex){
+        log.warn("Order not found {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Order not found by ID");
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(CustomizationNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCustomizationNotFoundException(CustomizationNotFoundException ex){
+        log.warn("Customization not found {}", ex.getMessage());
+        Map<String, String> errors = new HashMap<>();
+        errors.put("message", "Customization not found by ID");
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

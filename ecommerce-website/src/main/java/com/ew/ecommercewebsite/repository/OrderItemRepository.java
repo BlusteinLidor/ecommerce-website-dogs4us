@@ -12,4 +12,5 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItemI
     void deleteByIdProductId(UUID productId);
     boolean existsByIdProductId(UUID productId);
     boolean existsByIdOrderId(UUID orderId);
+    void deleteByIdOrderId(UUID orderId);
 }

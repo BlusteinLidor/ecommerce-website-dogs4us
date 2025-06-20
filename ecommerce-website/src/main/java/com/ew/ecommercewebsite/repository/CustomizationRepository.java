@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface CustomizationRepository extends JpaRepository<Customization, UUID> {
+    void deleteByOrderOrderId(UUID orderId);
 }
