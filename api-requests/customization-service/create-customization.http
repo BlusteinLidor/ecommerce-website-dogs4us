@@ -1,0 +1,12 @@
+### POST request to create a new customization
+POST http://localhost:4000/customizations
+Content-Type: application/json
+
+{
+  "product": "423e4567-e89b-12d3-a456-426614174001",
+  "order": "223e4567-e89b-12d3-a456-426614174001",
+  "fieldName": "Color Choice",
+  "fieldValue": "Blue"
+}
+
+###

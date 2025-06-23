@@ -61,16 +61,16 @@ public class CustomizationService {
         Customization customization = customizationRepository.findById(id).orElseThrow(
                 () -> new CustomizationNotFoundException("Customization not found with ID: " + id));
 
-        Product product = productRepository.findById(UUID.fromString(customizationRequestDTO.getProduct()))
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: "
-                + customizationRequestDTO.getProduct()));
+//        Product product = productRepository.findById(UUID.fromString(customizationRequestDTO.getProduct()))
+//                .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: "
+//                + customizationRequestDTO.getProduct()));
+//
+//        Order order = orderRepository.findById(UUID.fromString(customizationRequestDTO.getOrder()))
+//                .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: "
+//                + customizationRequestDTO.getOrder()));
 
-        Order order = orderRepository.findById(UUID.fromString(customizationRequestDTO.getOrder()))
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: "
-                + customizationRequestDTO.getOrder()));
-
-        customization.setProduct(product);
-        customization.setOrder(order);
+        customization.setProduct(customization.getProduct());
+        customization.setOrder(customization.getOrder());
         customization.setFieldName(customizationRequestDTO.getFieldName());
         customization.setFieldValue(customizationRequestDTO.getFieldValue());
 

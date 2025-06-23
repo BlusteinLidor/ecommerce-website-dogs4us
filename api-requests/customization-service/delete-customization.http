@@ -1,0 +1,4 @@
+### DELETE request to delete a customization
+DELETE http://localhost:4000/customizations/523e4567-e89b-12d3-a456-426614174000
+
+###

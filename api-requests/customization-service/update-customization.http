@@ -1,0 +1,10 @@
+### PUT request to update a customization
+PUT http://localhost:4000/customizations/523e4567-e89b-12d3-a456-426614174000
+Content-Type: application/json
+
+{
+  "fieldName": "Name Choice",
+  "fieldValue": "Lidor"
+}
+
+###

@@ -1,0 +1,4 @@
+### GET request to get all customizations
+GET http://localhost:4000/customizations
+
+###
