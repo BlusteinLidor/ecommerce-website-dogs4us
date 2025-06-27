@@ -1,7 +1,7 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.UserRequestDTO;
-import com.ew.ecommercewebsite.dto.UserResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.UserRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.UserResponseDTO;
 import com.ew.ecommercewebsite.model.User;
 
 public class UserMapper {

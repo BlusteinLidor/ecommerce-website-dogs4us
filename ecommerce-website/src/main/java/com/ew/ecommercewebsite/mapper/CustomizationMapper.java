@@ -1,7 +1,7 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.CustomizationRequestDTO;
-import com.ew.ecommercewebsite.dto.CustomizationResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.CustomizationRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.CustomizationResponseDTO;
 import com.ew.ecommercewebsite.model.Customization;
 
 public class CustomizationMapper {

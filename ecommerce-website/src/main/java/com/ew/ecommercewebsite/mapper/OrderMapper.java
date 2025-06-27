@@ -1,11 +1,10 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.OrderRequestDTO;
-import com.ew.ecommercewebsite.dto.OrderResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.OrderRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.OrderResponseDTO;
 import com.ew.ecommercewebsite.model.Order;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class OrderMapper {
 

@@ -1,7 +1,7 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.CategoryRequestDTO;
-import com.ew.ecommercewebsite.dto.CategoryResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.CategoryRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.CategoryResponseDTO;
 import com.ew.ecommercewebsite.model.Category;
 
 public class CategoryMapper {

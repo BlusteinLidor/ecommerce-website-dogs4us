@@ -1,7 +1,7 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.CartItemRequestDTO;
-import com.ew.ecommercewebsite.dto.CartItemResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.CartItemRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
 import com.ew.ecommercewebsite.model.CartItem;
 import com.ew.ecommercewebsite.utils.CartItemId;
 

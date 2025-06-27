@@ -1,7 +1,7 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.OrderItemRequestDTO;
-import com.ew.ecommercewebsite.dto.OrderItemResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.OrderItemRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.OrderItemResponseDTO;
 import com.ew.ecommercewebsite.model.OrderItem;
 import com.ew.ecommercewebsite.utils.OrderItemId;
 

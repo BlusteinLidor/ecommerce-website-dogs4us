@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:faces="jakarta.faces"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:pt="jakarta.faces.passthrough"
+      xmlns:cc="jakarta.faces.composite"
+      xmlns:c="jakarta.tags.core"
+      xmlns:p="primefaces"
+      xmlns:fn="jakarta.tags.functions">
+<h:head>
+    <title>Login</title>
+    <script>
+        async function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            console.log(email, password);
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const result = await response.text();
+            document.getElementById("loginResult").innerText = result;
+        }
+    </script>
+</h:head>
+<h:body>
+    <h:form id="loginForm" prependId="false">
+        <h:panelGrid columns="2">
+            <h:outputLabel for="email" value="Email:" />
+            <h:inputText id="email" />
+
+            <h:outputLabel for="password" value="Password:" />
+            <h:inputSecret id="password" />
+
+            <h:outputLabel />
+            <h:commandButton value="Login" onclick="login(); return false;" />
+        </h:panelGrid>
+    </h:form>
+
+    <h:outputText id="loginResult" style="color:red;" />
+
+
+</h:body>
+</html>

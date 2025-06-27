@@ -1,12 +1,8 @@
 package com.ew.ecommercewebsite.mapper;
 
-import com.ew.ecommercewebsite.dto.ProductRequestDTO;
-import com.ew.ecommercewebsite.dto.ProductResponseDTO;
-import com.ew.ecommercewebsite.dto.UserRequestDTO;
-import com.ew.ecommercewebsite.dto.UserResponseDTO;
-import com.ew.ecommercewebsite.model.Category;
+import com.ew.ecommercewebsite.dto.entity.ProductRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
 import com.ew.ecommercewebsite.model.Product;
-import com.ew.ecommercewebsite.model.User;
 
 public class ProductMapper {
 
