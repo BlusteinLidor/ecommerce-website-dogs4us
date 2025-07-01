@@ -16,8 +16,7 @@
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
-            console.log(email, password);
-            const response = await fetch('/login', {
+            const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
@@ -38,7 +37,7 @@
             <h:inputSecret id="password" />
 
             <h:outputLabel />
-            <h:commandButton value="Login" onclick="login(); return false;" />
+            <h:commandButton value="Login" onclick="login(); return false;"/>
         </h:panelGrid>
     </h:form>
 

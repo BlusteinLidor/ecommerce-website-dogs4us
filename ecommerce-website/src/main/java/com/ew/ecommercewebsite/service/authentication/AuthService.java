@@ -4,6 +4,8 @@ import com.ew.ecommercewebsite.dto.authentication.LoginRequestDTO;
 import com.ew.ecommercewebsite.dto.authentication.LoginResponseDTO;
 import com.ew.ecommercewebsite.model.User;
 import com.ew.ecommercewebsite.repository.UserRepository;
+import com.ew.ecommercewebsite.utils.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,31 +16,29 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
-        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-        Optional<User> optUser = userRepository.findByEmail(loginRequestDTO.getEmail());
-        if (optUser.isPresent()){
-            User user = optUser.get();
-            System.out.println(loginRequestDTO.getPassword() + " " + user.getPasswordHash());
-            if (passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswordHash())){
-                loginResponseDTO.setToken(user.getId().toString());
-                loginResponseDTO.setMessage("Login successful");
-            }
-            else{
-                loginResponseDTO.setMessage("Invalid email or password");
-                loginResponseDTO.setToken(null);
-            }
+    public Optional<String> authenticate(LoginRequestDTO loginRequestDTO){
+        Optional<String> token = userRepository.findByEmail(loginRequestDTO.getEmail())
+                .filter(user -> passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswordHash()))
+                .map(user -> jwtUtil.generateToken(user.getEmail(), Boolean.toString(user.getIsAdmin())));
+
+        return token;
+    }
+
+    public boolean validateToken(String token){
+        try{
+            jwtUtil.validateToken(token);
+            return true;
         }
-        else{
-            loginResponseDTO.setMessage("Invalid email or password");
-            loginResponseDTO.setToken(null);
+        catch (JwtException e){
+            return false;
         }
-        return loginResponseDTO;
     }
 }

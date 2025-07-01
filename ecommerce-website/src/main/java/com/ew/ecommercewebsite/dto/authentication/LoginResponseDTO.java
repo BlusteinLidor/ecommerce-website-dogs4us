@@ -2,15 +2,12 @@ package com.ew.ecommercewebsite.dto.authentication;
 
 public class LoginResponseDTO {
 
-    private String message;
     private String token;
 
-    public String getMessage() {
-        return message;
-    }
+    public LoginResponseDTO() {}
 
-    public void setMessage(String message) {
-        this.message = message;
+    public LoginResponseDTO(String token) {
+        this.token = token;
     }
 
     public String getToken() {
