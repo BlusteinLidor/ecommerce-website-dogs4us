@@ -1,20 +1,23 @@
 package com.ew.ecommercewebsite.dto.authentication;
 
+import com.ew.ecommercewebsite.model.User;
+import jakarta.servlet.http.HttpSession;
+
 public class LoginResponseDTO {
 
-    private String token;
+    private User user;
 
-    public LoginResponseDTO() {}
+    public LoginResponseDTO(){}
 
-    public LoginResponseDTO(String token) {
-        this.token = token;
+    public LoginResponseDTO(User user) {
+        this.user = user;
     }
 
-    public String getToken() {
-        return token;
+    public User getUser() {
+        return user;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

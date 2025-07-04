@@ -24,12 +24,23 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public Optional<String> authenticate(LoginRequestDTO loginRequestDTO){
-        Optional<String> token = userRepository.findByEmail(loginRequestDTO.getEmail())
-                .filter(user -> passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswordHash()))
-                .map(user -> jwtUtil.generateToken(user.getEmail(), Boolean.toString(user.getIsAdmin())));
+//    public Optional<String> authenticate(LoginRequestDTO loginRequestDTO){
+//        Optional<String> token = userRepository.findByEmail(loginRequestDTO.getEmail())
+//                .filter(user -> passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswordHash()))
+//                .map(user -> jwtUtil.generateToken(user.getEmail(), Boolean.toString(user.getIsAdmin())));
+//
+//        return token;
+//    }
 
-        return token;
+    public LoginResponseDTO authenticate(LoginRequestDTO loginRequestDTO){
+        Optional<User> optUser = userRepository.findByEmail(loginRequestDTO.getEmail())
+                .filter(user -> passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswordHash()));
+
+        if (optUser.isPresent()){
+            User user = optUser.get();
+            return new LoginResponseDTO(user);
+        }
+        return new LoginResponseDTO(null);
     }
 
     public boolean validateToken(String token){

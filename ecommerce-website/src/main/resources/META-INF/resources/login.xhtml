@@ -16,14 +16,37 @@
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
-            const response = await fetch('/auth/login', {
+            // const response = await fetch('/auth/login', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ email, password })
+            // });
+            // if (response.status === 200){
+            //     console.log("status 200")
+            // }
+            await fetch('/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
-            });
-
-            const result = await response.text();
-            document.getElementById("loginResult").innerText = result;
+            })
+                .then(response => {
+                    if(response.ok){
+                        window.location.href = "index.xhtml";
+                    }
+                    else{
+                        document.getElementById("loginResult").innerText = "Login failed";
+                    }
+                });
+            // console.log("response status:" + response.status);
+            // console.log("response body:" + response.body);
+            // console.log("response headers:" + response.headers);
+            // const result = await response.text();
+            // document.getElementById("loginResult").innerText = result;
+            // if (result.includes("token")){
+            //     console.log("contains token")
+            // }
+            // console.log(typeof result);
+            // console.log("LoginResult: " + result);
         }
     </script>
 </h:head>

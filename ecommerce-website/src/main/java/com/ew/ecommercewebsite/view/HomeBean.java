@@ -7,6 +7,7 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 public class HomeBean {
     private String message = "Welcome to Dogs4Us";
+    private String name;
 
     public String getMessage() {
         return message;
