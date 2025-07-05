@@ -12,6 +12,11 @@ import java.io.Serializable;
 public class SessionUserBean implements Serializable {
 
     private User user;
+    private final int cartItemCount = 3;
+
+    public int getCartItemCount() {
+        return cartItemCount;
+    }
 
     public User getUser() {
         return user;

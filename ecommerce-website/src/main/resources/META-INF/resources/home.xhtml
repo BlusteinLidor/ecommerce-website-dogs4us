@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:faces="jakarta.faces"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:f="jakarta.faces.core"
+      xmlns:h="jakarta.faces.html"
+      xmlns:pt="jakarta.faces.passthrough"
+      xmlns:cc="jakarta.faces.composite"
+      xmlns:c="jakarta.tags.core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="jakarta.tags.functions">
+<h:head>
+    <title>Dogs4Us</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:outputStylesheet library="assets" name="css/layout.css"/>
+</h:head>
+<h:body styleClass="layout-wrapper">
+
+    <!-- 🟦 Top Navigation Bar -->
+    <div class="flex justify-content-between align-items-center p-3 shadow-2 bg-white">
+        <!-- Logo -->
+        <div class="text-2xl font-bold text-blue-600">Dogs4Us</div>
+
+        <!-- Navigation links -->
+        <div class="flex gap-4">
+            <h:link outcome="/index" value="Home" styleClass="text-lg" />
+            <h:link outcome="/products" value="Products" styleClass="text-lg" />
+        </div>
+
+        <!-- Right side: Login/Register, Search, Cart -->
+        <div class="flex gap-3">
+            <h:link outcome="/login" value="Login" styleClass="text-sm"/>
+            <h:link outcome="/register" value="Register" styleClass="text-sm"/>
+            <h:commandLink>
+                <p:graphicImage name="assets/img/search-icon.png" width="20" />
+            </h:commandLink>
+            <h:commandLink>
+                <p:graphicImage name="assets/img/cart-icon.png" width="20" />
+            </h:commandLink>
+        </div>
+    </div>
+
+    <!-- 🐶 Hero Banner -->
+    <div class="w-full mt-4">
+        <h:graphicImage name="assets/img/dog-banner.jpg" style="width: 100%; max-height: 400px; object-fit: cover;" />
+    </div>
+
+    <!-- 🛍 Product Previews -->
+    <div class="grid grid-nogutter p-4">
+        <div class="col-12 md:col-4 p-2">
+            <h:graphicImage name="assets/img/product1.jpg" style="width: 100%; border-radius: 10px;" />
+        </div>
+        <div class="col-12 md:col-4 p-2">
+            <h:graphicImage name="assets/img/product2.jpg" style="width: 100%; border-radius: 10px;" />
+        </div>
+        <div class="col-12 md:col-4 p-2">
+            <h:graphicImage name="assets/img/product3.jpg" style="width: 100%; border-radius: 10px;" />
+        </div>
+    </div>
+
+</h:body>
+</html>
