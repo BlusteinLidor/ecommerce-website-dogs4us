@@ -9,6 +9,18 @@
     <title>Dogs4Us</title>
     <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
     <h:outputStylesheet library="assets" name="css/layout.css"/>
+    <script>
+        async function logout() {
+            await fetch('/auth/logout', {
+                method: 'POST'
+            })
+                .then(response => {
+                    if(response.ok){
+                        window.location.href = "home.xhtml?faces-redirect=true";
+                    }
+                });
+        }
+    </script>
 </h:head>
 
 <h:body styleClass="layout-wrapper bg-gray-50">
@@ -32,7 +44,7 @@
             </h:panelGroup>
             <h:panelGroup rendered="#{sessionUserBean.user != null}">
                 <span class="text-sm mr-2">Hello, #{sessionUserBean.user.name}</span>
-                <h:link outcome="/logout" value="Logout" styleClass="text-sm" />
+                <h:link onclick="logout(); return false;" value="Logout" styleClass="text-sm" />
             </h:panelGroup>
 
             <h:link outcome="/cart.xhtml" styleClass="relative">

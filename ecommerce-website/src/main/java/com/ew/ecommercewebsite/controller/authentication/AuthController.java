@@ -38,14 +38,13 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
-//        if (tokenOpt.isEmpty()){
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        String token = tokenOpt.get();
-//        httpServletRequest.getSession().setAttribute("user", token);
-////        return ResponseEntity.ok(new LoginResponseDTO(httpSession));
-//        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpSession httpSession){
+        sessionUserBean.setUser(null);
+        httpSession.invalidate();
+        return ResponseEntity.ok().header("Cache-Control", "no-store, no-cache, must-revalidate").build();
     }
 
     @GetMapping("/validate")
