@@ -58,10 +58,13 @@
         <ui:repeat value="#{homeBean.featuredProducts}" var="product">
             <div class="col-12 md:col-4 p-2">
                 <div class="shadow-1 border-round p-3 bg-white">
+                    <h:link outcome="product" includeViewParams="true">
+                    <f:param name="id" value="#{product.id}" />
                     <h:graphicImage value="#{product.imageURL}" alt="#{product.name}"
                                     style="width: 100%; border-radius: 8px; object-fit: cover; max-height: 250px;" />
                     <h4 class="mt-2 mb-1 text-lg font-bold">#{product.name}</h4>
                     <p class="text-sm text-gray-600">#{product.description}</p>
+                    </h:link>
                 </div>
             </div>
         </ui:repeat>

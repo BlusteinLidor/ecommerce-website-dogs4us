@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+    <title>Product Details</title>
+    <h:outputStylesheet name="css/layout.css" library="assets"/>
+</h:head>
+<h:body>
+    <h:form>
+        <h1>#{productPageBean.product.name}</h1>
+        <h:graphicImage value="#{productPageBean.product.imageURL}" alt="#{productPageBean.product.name}" style="width:400px; border-radius:8px;" />
+        <p><strong>Description:</strong> #{productPageBean.product.description}</p>
+        <p><strong>Price:</strong> $#{productPageBean.product.price}</p>
+        <h:link value="Back to Home" outcome="home" />
+    </h:form>
+</h:body>
+</html>

@@ -49,4 +49,11 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable UUID id){
+        ProductResponseDTO productResponseDTO = productService.getProductById(id);
+
+        return ResponseEntity.ok().body(productResponseDTO);
+    }
+
 }

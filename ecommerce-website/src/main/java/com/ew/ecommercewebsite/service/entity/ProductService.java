@@ -88,4 +88,11 @@ public class ProductService {
 
         productRepository.delete(product);
     }
+
+    public ProductResponseDTO getProductById(UUID id){
+        Product product = productRepository.findById(id).orElseThrow(
+                () -> new ProductNotFoundException("Product not found with ID: " + id));
+
+        return ProductMapper.toDTO(product);
+    }
 }
