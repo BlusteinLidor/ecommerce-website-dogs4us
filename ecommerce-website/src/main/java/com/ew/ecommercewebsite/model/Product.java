@@ -18,6 +18,8 @@ public class Product {
 
     private String description;
 
+    private String imageURL;
+
     @NotNull
     private double price;
 
@@ -55,6 +57,14 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public double getPrice() {

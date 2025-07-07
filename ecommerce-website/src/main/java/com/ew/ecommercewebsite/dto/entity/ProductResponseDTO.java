@@ -5,6 +5,7 @@ public class ProductResponseDTO {
     private String id;
     private String name;
     private String description;
+    private String imageURL;
     private String price;
     private String category;
     private String stockQuantity;
@@ -32,6 +33,14 @@ public class ProductResponseDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getPrice() {

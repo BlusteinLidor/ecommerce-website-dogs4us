@@ -66,6 +66,7 @@ public class ProductService {
 
         product.setName(productRequestDTO.getName());
         product.setDescription(productRequestDTO.getDescription());
+        product.setImageURL(productRequestDTO.getImageURL());
         product.setPrice(Double.parseDouble(productRequestDTO.getPrice()));
         product.setStockQuantity(Integer.parseInt(productRequestDTO.getStockQuantity()));
         product.setCustomizableFields(productRequestDTO.getCustomizableFields());

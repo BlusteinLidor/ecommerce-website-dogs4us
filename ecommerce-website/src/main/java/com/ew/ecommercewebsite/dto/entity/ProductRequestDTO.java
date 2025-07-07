@@ -13,6 +13,8 @@ public class ProductRequestDTO {
 
     private String description;
 
+    private String imageURL;
+
     @NotBlank(message = "Price is required")
     private String price;
 
@@ -36,6 +38,14 @@ public class ProductRequestDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getPrice() {
