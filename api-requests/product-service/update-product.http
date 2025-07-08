@@ -1,15 +1,15 @@
 ### PUT request to update a product
-PUT http://localhost:4000/products/423e4567-e89b-12d3-a456-426614174001
+PUT http://localhost:4000/products/2322cf20-39b9-4fa1-9b94-e6f698c0ce42
 Content-Type: application/json
 
 {
-    "name": "Customizable Dog Toy",
-    "description": "Personalized toy for your furry friend",
-    "imageURL": "assets/img/product3.jpg",
-    "price": "29.99",
-    "category": "Dog Toys",
-    "stockQuantity": "20",
-    "customizableFields": []
-  }
+  "name": "Customizable Dog Pillow",
+  "description": "Pillow",
+  "imageURL": "assets/img/product4.jpg",
+  "price": "33.99",
+  "category": "Dog Pillows",
+  "stockQuantity": "4",
+  "customizableFields": ["Image"]
+}
 
 ###

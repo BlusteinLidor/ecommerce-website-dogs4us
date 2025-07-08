@@ -3,12 +3,13 @@ POST http://localhost:4000/products
 Content-Type: application/json
 
 {
-    "name": "Customizable Dog Bowl",
-    "description": "",
-    "price": "19.99",
-    "category": "Dog Bowls",
-    "stockQuantity": "20",
-    "customizableFields": ["Name"]
+    "name": "Customizable Dog Blanket",
+    "description": "Blanket",
+    "imageURL": "/assets/img/product8.jpg",
+    "price": "35.99",
+    "category": "Dog Blankets",
+    "stockQuantity": "5",
+    "customizableFields": ["Image"]
   }
 
 ###

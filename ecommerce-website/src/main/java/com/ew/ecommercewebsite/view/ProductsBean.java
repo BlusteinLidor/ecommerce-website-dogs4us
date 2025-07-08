@@ -1,7 +1,6 @@
 package com.ew.ecommercewebsite.view;
 
 import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
-import com.ew.ecommercewebsite.model.Product;
 import jakarta.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -14,8 +13,8 @@ import java.util.List;
 
 @Component
 @RequestScope
-public class HomeBean {
-    private List<ProductResponseDTO> featuredProducts = new ArrayList<>();
+public class ProductsBean {
+    private List<ProductResponseDTO> products = new ArrayList<>();
 
     @PostConstruct
     public void init(){
@@ -23,15 +22,13 @@ public class HomeBean {
             RestTemplate restTemplate = new RestTemplate();
             String url = "http://localhost:4000/products";
             ResponseEntity<ProductResponseDTO[]> response = restTemplate.getForEntity(url, ProductResponseDTO[].class);
-            List<ProductResponseDTO> products = Arrays.asList(response.getBody());
-//            featuredProducts = Arrays.asList(response.getBody());
-            featuredProducts = products.subList(0, 3);
+            products = Arrays.asList(response.getBody());
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public List<ProductResponseDTO> getFeaturedProducts(){
-        return featuredProducts;
+    public List<ProductResponseDTO> getProducts(){
+        return products;
     }
 }
