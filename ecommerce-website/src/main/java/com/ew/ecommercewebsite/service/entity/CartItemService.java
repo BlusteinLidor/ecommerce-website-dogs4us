@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CartItemService {
@@ -59,6 +61,17 @@ public class CartItemService {
                 () -> new CartItemNotFoundException("Cart item not found with ID: " + id));
 
         cartItemRepository.delete(cartItem);
+    }
+
+    public List<CartItemResponseDTO> getCartItemsByUserId(UUID userId){
+        List<CartItem> cartItems = cartItemRepository.findByIdUserId(userId);
+        if (cartItems.isEmpty()){
+            throw new CartItemNotFoundException("Cart item not found with user ID: " + userId);
+        }
+        List<CartItemResponseDTO> cartItemResponseDTOs = cartItems.stream()
+                .map(cartItem -> CartItemMapper.toDTO(cartItem)).toList();
+
+        return cartItemResponseDTOs;
     }
 
 }

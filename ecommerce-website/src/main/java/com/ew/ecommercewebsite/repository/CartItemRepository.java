@@ -5,6 +5,7 @@ import com.ew.ecommercewebsite.utils.CartItemId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +14,5 @@ public interface CartItemRepository extends JpaRepository<CartItem, CartItemId> 
 
     void deleteByIdUserId(UUID userId);
     void deleteByIdProductId(UUID productId);
+    List<CartItem> findByIdUserId(UUID userId);
 }

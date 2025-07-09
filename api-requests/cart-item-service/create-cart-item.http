@@ -3,9 +3,9 @@ POST http://localhost:4000/cart-items
 Content-Type: application/json
 
 {
-  "userId": "123e4567-e89b-12d3-a456-426614174000",
-  "productId": "423e4567-e89b-12d3-a456-426614174000",
-  "quantity": "5",
+  "userId": "4744ef9c-bbe9-48f5-84ff-546b14863150",
+  "productId": "2322cf20-39b9-4fa1-9b94-e6f698c0ce42",
+  "quantity": "2",
   "customizationPreview": ""
 }
 ###
