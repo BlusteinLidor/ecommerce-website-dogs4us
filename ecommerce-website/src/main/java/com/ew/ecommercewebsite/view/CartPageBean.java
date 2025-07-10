@@ -56,9 +56,12 @@ public class CartPageBean implements Serializable {
             }
         }
 
+        cartItemCount = cartItems.size();
+
         totalCartPrice = cartItems.stream()
                 .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
                 .sum();
+
     }
 
     public List<CartItemWithProductResponseDTO> getCartItems(){
@@ -71,5 +74,9 @@ public class CartPageBean implements Serializable {
 
     public boolean isCartEmpty() {
         return cartItems == null || cartItems.isEmpty();
+    }
+
+    public int getCartItemCount() {
+        return cartItemCount;
     }
 }
