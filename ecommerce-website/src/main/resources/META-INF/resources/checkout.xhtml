@@ -59,31 +59,7 @@
 
 
     <h:body>
-        <!-- Cart Items -->
-        <ui:repeat value="#{cartPageBean.cartItems}" var="item">
-            <div class="flex border-round shadow-2 m-2 p-3 align-items-center">
-                <img src="#{item.product.imageURL}" alt="Product Image" width="100" class="mr-3" />
-                <div>
-                    <h:outputText value="#{item.product.name}" styleClass="font-bold text-xl" /><br/>
-                    <h:outputText value="Price: $#{item.product.price}" /><br/>
-                    <h:outputText value="Quantity: #{item.cartItem.quantity}" /><br/>
-                    <h:outputText value="Preview: #{item.cartItem.customizationPreview}" /><br/>
-                    <h:outputText value="Total: $#{item.product.price * item.cartItem.quantity}" styleClass="font-bold"/>
-                </div>
-            </div>
-        </ui:repeat>
-
-        <!-- 🧾 Cart Total and Checkout Button -->
-        <div class="flex justify-content-between align-items-center m-4 p-3 border-top-1 surface-border">
-            <h:outputText value="Total Cart Price: $#{cartPageBean.totalCartPrice}" styleClass="text-xl font-bold" />
-
-            <h:form>
-                <h:commandButton value="Proceed to Checkout"
-                                 action="/checkout.xhtml?faces-redirect=true"
-                                 disabled="#{cartPageBean.cartEmpty}"
-                                 styleClass="ml-auto p-button p-button-success text-white bg-orange-900 text-lg p-3 border-round" />
-            </h:form>
-        </div>
+        <h1>Thank you for your purchase!</h1>
     </h:body>
 
 
@@ -94,3 +70,5 @@
 
 </h:body>
 </html>
+
+

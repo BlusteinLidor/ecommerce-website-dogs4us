@@ -27,6 +27,8 @@ public class CartPageBean implements Serializable {
     private SessionUserBean sessionUserBean;
     private RestTemplate restTemplate = new RestTemplate();
     private List<CartItemWithProductResponseDTO> cartItems;
+    private int cartItemCount;
+    private double totalCartPrice;
 
     @PostConstruct
     public void init(){
@@ -53,9 +55,21 @@ public class CartPageBean implements Serializable {
                 cartItems.add(fullItem);
             }
         }
+
+        totalCartPrice = cartItems.stream()
+                .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
+                .sum();
     }
 
     public List<CartItemWithProductResponseDTO> getCartItems(){
         return cartItems;
+    }
+
+    public double getTotalCartPrice(){
+        return totalCartPrice;
+    }
+
+    public boolean isCartEmpty() {
+        return cartItems == null || cartItems.isEmpty();
     }
 }
