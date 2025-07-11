@@ -83,7 +83,7 @@ public class ProductPageBean implements Serializable {
         dto.setQuantity(Integer.toString(quantity));
         dto.setCustomizationPreview(""); // or null if not used
 
-        restTemplate.postForObject("http://localhost:4000/cart-item", dto, Void.class);
+        restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
 
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));

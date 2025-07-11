@@ -81,6 +81,7 @@
             <!-- 🛒 Add to Cart Button -->
             <h:commandButton value="Add to Cart"
                              action="#{productPageBean.addToCart}"
+                             disabled="#{sessionUserBean.user == null}"
                              styleClass="mt-3 p-button p-button-success" />
         </h:form>
 </div>
