@@ -40,7 +40,6 @@
         <div class="flex gap-3 align-items-center">
             <h:panelGroup rendered="#{sessionUserBean.user == null}">
                 <h:link outcome="/login" value="Login" styleClass="text-sm" />
-                <h:link outcome="/register" value="Register" styleClass="text-sm ml-2" />
             </h:panelGroup>
             <h:panelGroup rendered="#{sessionUserBean.user != null}">
                 <span class="text-sm mr-2">Hello, #{sessionUserBean.user.name}</span>

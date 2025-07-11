@@ -2,8 +2,13 @@ package com.ew.ecommercewebsite.service.authentication;
 
 import com.ew.ecommercewebsite.dto.authentication.LoginRequestDTO;
 import com.ew.ecommercewebsite.dto.authentication.LoginResponseDTO;
+import com.ew.ecommercewebsite.dto.authentication.RegisterRequestDTO;
+import com.ew.ecommercewebsite.dto.authentication.RegisterResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.UserRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.UserResponseDTO;
 import com.ew.ecommercewebsite.model.User;
 import com.ew.ecommercewebsite.repository.UserRepository;
+import com.ew.ecommercewebsite.service.entity.UserService;
 import com.ew.ecommercewebsite.utils.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,20 +22,15 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserService userService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder
+            , JwtUtil jwtUtil, UserService userService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
-
-//    public Optional<String> authenticate(LoginRequestDTO loginRequestDTO){
-//        Optional<String> token = userRepository.findByEmail(loginRequestDTO.getEmail())
-//                .filter(user -> passwordEncoder.matches(loginRequestDTO.getPassword(), user.getPasswordHash()))
-//                .map(user -> jwtUtil.generateToken(user.getEmail(), Boolean.toString(user.getIsAdmin())));
-//
-//        return token;
-//    }
 
     public LoginResponseDTO authenticate(LoginRequestDTO loginRequestDTO){
         Optional<User> optUser = userRepository.findByEmail(loginRequestDTO.getEmail())
@@ -41,6 +41,10 @@ public class AuthService {
             return new LoginResponseDTO(user);
         }
         return new LoginResponseDTO(null);
+    }
+
+    public UserResponseDTO register(UserRequestDTO userRequestDTO){
+        return userService.createUser(userRequestDTO);
     }
 
     public boolean validateToken(String token){

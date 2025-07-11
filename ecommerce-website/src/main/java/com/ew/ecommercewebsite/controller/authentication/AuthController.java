@@ -2,10 +2,14 @@ package com.ew.ecommercewebsite.controller.authentication;
 
 import com.ew.ecommercewebsite.dto.authentication.LoginRequestDTO;
 import com.ew.ecommercewebsite.dto.authentication.LoginResponseDTO;
+import com.ew.ecommercewebsite.dto.authentication.RegisterResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.UserRequestDTO;
+import com.ew.ecommercewebsite.dto.entity.UserResponseDTO;
 import com.ew.ecommercewebsite.service.authentication.AuthService;
 import com.ew.ecommercewebsite.view.SessionUserBean;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +42,13 @@ public class AuthController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserRequestDTO userRequestDTO, HttpServletRequest httpServletRequest){
+        UserResponseDTO userResponseDTO = authService.register(userRequestDTO);
+
+        return ResponseEntity.ok(userResponseDTO);
     }
 
     @PostMapping("/logout")

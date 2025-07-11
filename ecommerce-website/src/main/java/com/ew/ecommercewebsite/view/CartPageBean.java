@@ -11,6 +11,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.Serializable;
@@ -39,10 +40,10 @@ public class CartPageBean implements Serializable {
         }
 
         cartItems = new ArrayList<>();
-
-        if(sessionUserBean.getUser() != null){
+        try{
             UUID userId = sessionUserBean.getUser().getId();
             String url = "http://localhost:4000/cart-items/userId/" + userId;
+
             CartItemResponseDTO[] items = restTemplate.getForObject(url, CartItemResponseDTO[].class);
 
             for (CartItemResponseDTO item : items) {
@@ -55,6 +56,15 @@ public class CartPageBean implements Serializable {
                 cartItems.add(fullItem);
             }
         }
+        catch (HttpClientErrorException.NotFound e){
+            cartItems = new ArrayList<>();
+        }
+        catch (Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error fetching cart items", null));
+            e.printStackTrace();
+        }
+
 
         cartItemCount = cartItems.size();
 
