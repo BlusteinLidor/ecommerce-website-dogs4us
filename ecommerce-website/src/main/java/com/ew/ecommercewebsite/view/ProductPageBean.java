@@ -3,6 +3,8 @@ package com.ew.ecommercewebsite.view;
 import com.ew.ecommercewebsite.dto.entity.CartItemRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
 import com.ew.ecommercewebsite.model.Product;
+import com.ew.ecommercewebsite.repository.CartItemRepository;
+import com.ew.ecommercewebsite.utils.CartItemId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
@@ -30,9 +32,15 @@ public class ProductPageBean implements Serializable {
     private ProductResponseDTO product;
     @Autowired
     private SessionUserBean sessionUserBean;
-    private RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final CartItemRepository cartItemRepository;
 
     private int quantity = 1;
+
+    @Autowired
+    public ProductPageBean(CartItemRepository cartItemRepository){
+        this.cartItemRepository = cartItemRepository;
+    }
 
     public ProductResponseDTO getProduct() {
         return product;
@@ -80,10 +88,19 @@ public class ProductPageBean implements Serializable {
         CartItemRequestDTO dto = new CartItemRequestDTO();
         dto.setUserId(userId.toString());
         dto.setProductId(productId.toString());
-        dto.setQuantity(Integer.toString(quantity));
         dto.setCustomizationPreview(""); // or null if not used
-
-        restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
+        CartItemId cartItemId = new CartItemId(userId, productId);
+        if(cartItemRepository.existsById(cartItemId)){
+            int previousQuantity = cartItemRepository.findById(cartItemId).orElseThrow().getQuantity();
+            int newQuantity = previousQuantity + quantity;
+            dto.setQuantity(String.valueOf(newQuantity));
+            restTemplate.put("http://localhost:4000/cart-items/userId/"
+                    + userId.toString() + "/productId/" + productId.toString() , dto);
+        }
+        else{
+            dto.setQuantity(Integer.toString(quantity));
+            restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
+        }
 
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));

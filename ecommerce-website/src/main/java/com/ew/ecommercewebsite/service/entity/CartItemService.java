@@ -35,6 +35,11 @@ public class CartItemService {
     public CartItemResponseDTO createCartItem(CartItemRequestDTO cartItemRequestDTO){
         CartItem cartItem = CartItemMapper.toModel(cartItemRequestDTO);
         if (cartItemRepository.existsById(cartItem.getId())){
+//            CartItem originalCartItem = cartItemRepository.findById(cartItem.getId()).orElseThrow();
+//            int previousQuantity = originalCartItem.getQuantity();
+//            int quantityToAdd = Integer.parseInt(cartItemRequestDTO.getQuantity());
+//            int newQuantity = previousQuantity + quantityToAdd;
+//            originalCartItem.setQuantity(newQuantity);
             throw new CartItemIdAlreadyExistsException("Cart item with this ID already exists "
                     + cartItemRequestDTO.getUserId() + " " + cartItemRequestDTO.getProductId());
         }
