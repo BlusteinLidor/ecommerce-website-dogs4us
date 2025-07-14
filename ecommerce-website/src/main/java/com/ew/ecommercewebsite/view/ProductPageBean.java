@@ -33,9 +33,11 @@ public class ProductPageBean implements Serializable {
     @Autowired
     private SessionUserBean sessionUserBean;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final CartItemRepository cartItemRepository;
+    private CartItemRepository cartItemRepository;
 
     private int quantity = 1;
+
+    public ProductPageBean(){}
 
     @Autowired
     public ProductPageBean(CartItemRepository cartItemRepository){

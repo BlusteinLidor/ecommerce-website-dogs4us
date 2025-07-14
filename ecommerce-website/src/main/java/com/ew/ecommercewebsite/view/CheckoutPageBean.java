@@ -1,0 +1,102 @@
+package com.ew.ecommercewebsite.view;
+
+import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.CartItemWithProductResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
+import jakarta.annotation.PostConstruct;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Named
+@ViewScoped
+public class CheckoutPageBean implements Serializable {
+
+    private final CartPageBean cartPageBean;
+    @Autowired
+    private SessionUserBean sessionUserBean;
+
+    private List<CartItemWithProductResponseDTO> cartItems = new ArrayList<>();
+    private RestTemplate restTemplate = new RestTemplate();
+
+    private String name;
+    private String address;
+    private String phone;
+
+    @Inject
+    public CheckoutPageBean(@Named CartPageBean cartPageBean) {
+        this.cartPageBean = cartPageBean;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (sessionUserBean == null || sessionUserBean.getUser() == null) {
+            return;
+        }
+
+        UUID userId = sessionUserBean.getUser().getId();
+        String url = "http://localhost:4000/cart-items/userId/" + userId;
+
+        CartItemResponseDTO[] items = restTemplate.getForObject(url, CartItemResponseDTO[].class);
+        for (CartItemResponseDTO item : items) {
+            ProductResponseDTO product = restTemplate.getForObject(
+                    "http://localhost:4000/products/" + item.getProductId(), ProductResponseDTO.class);
+
+            CartItemWithProductResponseDTO fullItem = new CartItemWithProductResponseDTO();
+            fullItem.setCartItem(item);
+            fullItem.setProduct(product);
+            cartItems.add(fullItem);
+        }
+
+        // Pre-fill user name if available
+        this.name = sessionUserBean.getUser().getName();
+    }
+
+    public void placeOrder() {
+        // TODO: Implement actual order saving logic here (call order endpoint, etc.)
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Order placed successfully!", null));
+
+        // Optionally clear the cart:
+        cartItems.clear();
+        cartPageBean.setCartItemCount(0);
+    }
+
+    public void redirectIfNotLoggedIn() throws IOException {
+        if (sessionUserBean.getUser() == null) {
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .redirect("home.xhtml?faces-redirect=true");
+        }
+    }
+
+    public List<CartItemWithProductResponseDTO> getCartItems() {
+        return cartItems;
+    }
+
+    public double getTotalCost() {
+        return cartItems.stream()
+                .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
+                .sum();
+    }
+
+    // Getters and setters for name, address, phone
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+}
+

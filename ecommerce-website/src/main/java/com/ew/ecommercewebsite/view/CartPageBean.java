@@ -89,4 +89,8 @@ public class CartPageBean implements Serializable {
     public int getCartItemCount() {
         return cartItemCount;
     }
+
+    public void setCartItemCount(int cartItemCount) {
+        this.cartItemCount = cartItemCount;
+    }
 }
