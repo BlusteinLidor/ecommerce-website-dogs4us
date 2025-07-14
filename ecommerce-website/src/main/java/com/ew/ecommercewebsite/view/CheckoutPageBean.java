@@ -68,8 +68,21 @@ public class CheckoutPageBean implements Serializable {
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Order placed successfully!", null));
 
         // Optionally clear the cart:
-        cartItems.clear();
-        cartPageBean.setCartItemCount(0);
+        UUID userId = sessionUserBean.getUser().getId();
+        String url = "http://localhost:4000/cart-items/userId/" + userId;
+
+        try{
+            cartPageBean.setCartItemCount(0);
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .redirect("order-confirmation.xhtml?faces-redirect=true");
+            restTemplate.delete(url);
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error placing order", null));
+            cartPageBean.setCartItemCount(cartItems.size());
+        }
     }
 
     public void redirectIfNotLoggedIn() throws IOException {

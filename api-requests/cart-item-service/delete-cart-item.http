@@ -1,4 +1,4 @@
 ### DELETE request to delete a cart item
-DELETE http://localhost:4000/cart-items/userId/123e4567-e89b-12d3-a456-426614174000/productId/423e4567-e89b-12d3-a456-426614174000
+DELETE http://localhost:4000/cart-items/userId/4744ef9c-bbe9-48f5-84ff-546b14863150/productId/9aaa20aa-e9a5-49f6-b197-51b79fc338c3
 
 ###

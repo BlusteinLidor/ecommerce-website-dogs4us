@@ -79,4 +79,13 @@ public class CartItemService {
         return cartItemResponseDTOs;
     }
 
+    @Transactional
+    public void deleteCartItemsByUserId(UUID userId){
+        List<CartItem> cartItems = cartItemRepository.findByIdUserId(userId);
+        if (cartItems.isEmpty()){
+            throw new CartItemNotFoundException("Cart item not found with user ID: " + userId);
+        }
+        cartItemRepository.deleteAll(cartItems);
+    }
+
 }

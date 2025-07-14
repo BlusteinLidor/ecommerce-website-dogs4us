@@ -58,4 +58,10 @@ public class CartItemController {
         return ResponseEntity.ok().body(cartItemResponseDTOs);
     }
 
+    @DeleteMapping("/userId/{userId}")
+    public ResponseEntity<Void> deleteCartItemsByUserId(@PathVariable UUID userId){
+        cartItemService.deleteCartItemsByUserId(userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

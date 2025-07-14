@@ -1,0 +1,4 @@
+### DELETE request to delete cart items by user id
+DELETE http://localhost:4000/cart-items/userId/71995f7f-3702-43a5-99fb-9a1e7f384bb3
+
+###

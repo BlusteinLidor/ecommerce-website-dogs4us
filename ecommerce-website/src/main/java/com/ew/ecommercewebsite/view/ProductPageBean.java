@@ -34,14 +34,15 @@ public class ProductPageBean implements Serializable {
     private SessionUserBean sessionUserBean;
     private final RestTemplate restTemplate = new RestTemplate();
     private CartItemRepository cartItemRepository;
-
+    private CartPageBean cartPageBean;
     private int quantity = 1;
 
     public ProductPageBean(){}
 
     @Autowired
-    public ProductPageBean(CartItemRepository cartItemRepository){
+    public ProductPageBean(CartItemRepository cartItemRepository, CartPageBean cartPageBean){
         this.cartItemRepository = cartItemRepository;
+        this.cartPageBean = cartPageBean;
     }
 
     public ProductResponseDTO getProduct() {
@@ -103,6 +104,7 @@ public class ProductPageBean implements Serializable {
             dto.setQuantity(Integer.toString(quantity));
             restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
         }
+        cartPageBean.setCartItemCount(cartPageBean.getCartItemCount() + 1);
 
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));

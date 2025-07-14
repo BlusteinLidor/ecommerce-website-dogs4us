@@ -56,8 +56,13 @@ public class CartPageBean implements Serializable {
                 cartItems.add(fullItem);
             }
         }
-        catch (HttpClientErrorException.NotFound e){
-            cartItems = new ArrayList<>();
+        catch (HttpClientErrorException e) {
+            // If 400 BAD_REQUEST means "no cart items", treat as empty cart
+            if (e.getStatusCode().value() == 400) {
+                cartItems = new ArrayList<>();
+            } else {
+                e.printStackTrace(); // Or use logging
+            }
         }
         catch (Exception e){
             FacesContext.getCurrentInstance().addMessage(null,
