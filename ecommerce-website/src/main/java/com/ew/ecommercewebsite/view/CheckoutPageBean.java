@@ -2,6 +2,7 @@ package com.ew.ecommercewebsite.view;
 
 import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
 import com.ew.ecommercewebsite.dto.entity.CartItemWithProductResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.OrderRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -67,7 +69,8 @@ public class CheckoutPageBean implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Order placed successfully!", null));
 
-        // Optionally clear the cart:
+        double totalPrice = getTotalCost();
+
         UUID userId = sessionUserBean.getUser().getId();
         String url = "http://localhost:4000/cart-items/userId/" + userId;
 
@@ -83,6 +86,19 @@ public class CheckoutPageBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error placing order", null));
             cartPageBean.setCartItemCount(cartItems.size());
         }
+
+//        Create Order Entity
+        url = "http://localhost:4000/orders";
+        OrderRequestDTO order = new OrderRequestDTO();
+        order.setUser(userId.toString());
+        order.setOrderDate(LocalDate.now().toString());
+        order.setTotalAmount(String.format("%.2f" ,totalPrice));
+        restTemplate.postForEntity(url, order, Void.class);
+
+//        @TODO
+//        Create Order Items
+
+
     }
 
     public void redirectIfNotLoggedIn() throws IOException {
