@@ -41,6 +41,9 @@
         </h:panelGroup>
         <h:panelGroup rendered="#{sessionUserBean.user != null}">
             <span class="text-sm mr-2">Hello, #{sessionUserBean.user.name}</span>
+            <h:link outcome="/user-details.xhtml" styleClass="text-sm">
+                <p:graphicImage name="assets/img/user-icon.png" width="24" alt="User"/>
+            </h:link>
             <h:link onclick="logout(); return false;" value="Logout" styleClass="text-sm" />
         </h:panelGroup>
 

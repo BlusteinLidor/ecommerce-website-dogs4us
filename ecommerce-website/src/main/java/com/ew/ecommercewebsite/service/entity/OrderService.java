@@ -13,6 +13,7 @@ import com.ew.ecommercewebsite.repository.OrderRepository;
 import com.ew.ecommercewebsite.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -83,5 +84,14 @@ public class OrderService {
         orderItemRepository.deleteByIdOrderId(id);
         customizationRepository.deleteByOrderOrderId(id);
         orderRepository.deleteById(id);
+    }
+
+    public List<OrderResponseDTO> getOrdersByUserId(@PathVariable UUID userId){
+        List<Order> orders = orderRepository.findAll();
+
+        List<OrderResponseDTO> orderResponseDTOs = orders.stream()
+                .map(order -> OrderMapper.toDTO(order)).filter(order -> order.getUser().equalsIgnoreCase(userId.toString())).toList();
+
+        return orderResponseDTOs;
     }
 }

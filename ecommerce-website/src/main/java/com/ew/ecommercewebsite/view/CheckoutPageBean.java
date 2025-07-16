@@ -1,9 +1,7 @@
 package com.ew.ecommercewebsite.view;
 
-import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
-import com.ew.ecommercewebsite.dto.entity.CartItemWithProductResponseDTO;
-import com.ew.ecommercewebsite.dto.entity.OrderRequestDTO;
-import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
+import com.ew.ecommercewebsite.dto.entity.*;
+import com.ew.ecommercewebsite.model.CartItem;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -11,6 +9,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -72,13 +71,41 @@ public class CheckoutPageBean implements Serializable {
         double totalPrice = getTotalCost();
 
         UUID userId = sessionUserBean.getUser().getId();
-        String url = "http://localhost:4000/cart-items/userId/" + userId;
+
+        //        Create Order Entity
+        String createOrderUrl = "http://localhost:4000/orders";
+        OrderRequestDTO order = new OrderRequestDTO();
+        order.setUser(userId.toString());
+        order.setOrderDate(LocalDate.now().toString());
+        order.setTotalAmount(String.format("%.2f" ,totalPrice));
+        ResponseEntity<OrderResponseDTO> response = restTemplate.postForEntity(createOrderUrl, order, OrderResponseDTO.class);
+        OrderResponseDTO orderResponse = response.getBody();
+        String orderId = orderResponse.getId();
+
+//        Create Order Items
+        String createOrderItemUrl = "http://localhost:4000/order-items";
+        for(CartItemWithProductResponseDTO item : cartItems){
+            String productId = item.getCartItem().getProductId();
+            String quantity = item.getCartItem().getQuantity();
+            String unitPrice = item.getProduct().getPrice();
+            String customizationRef = item.getCartItem().getCustomizationPreview();
+            OrderItemRequestDTO orderItem = new OrderItemRequestDTO();
+            orderItem.setOrderId(orderId);
+            orderItem.setProductId(productId);
+            orderItem.setQuantity(quantity);
+            orderItem.setUnitPrice(unitPrice);
+            orderItem.setCustomizationReference(customizationRef);
+            restTemplate.postForObject(createOrderItemUrl, orderItem, OrderItemResponseDTO.class);
+        }
+
+
+        String deleteCartItemsUrl = "http://localhost:4000/cart-items/userId/" + userId;
 
         try{
             cartPageBean.setCartItemCount(0);
             FacesContext.getCurrentInstance().getExternalContext()
                     .redirect("order-confirmation.xhtml?faces-redirect=true");
-            restTemplate.delete(url);
+            restTemplate.delete(deleteCartItemsUrl);
         }
         catch (IOException e){
             e.printStackTrace();
@@ -86,17 +113,6 @@ public class CheckoutPageBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error placing order", null));
             cartPageBean.setCartItemCount(cartItems.size());
         }
-
-//        Create Order Entity
-        url = "http://localhost:4000/orders";
-        OrderRequestDTO order = new OrderRequestDTO();
-        order.setUser(userId.toString());
-        order.setOrderDate(LocalDate.now().toString());
-        order.setTotalAmount(String.format("%.2f" ,totalPrice));
-        restTemplate.postForEntity(url, order, Void.class);
-
-//        @TODO
-//        Create Order Items
 
 
     }
