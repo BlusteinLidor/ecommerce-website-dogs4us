@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<f:metadata>
+    <f:viewParam name="id" value="#{orderDetailsPageBean.orderId}" />
+    <f:event type="preRenderView" listener="#{orderDetailsPageBean.init}" />
+</f:metadata>
+
+<h:head>
+    <title>Order Details</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+</h:head>
+
+<h:body class="bg-gray-50 p-4">
+    <h1 class="text-2xl font-bold mb-4">Order Details</h1>
+
+    <ui:repeat value="#{orderDetailsPageBean.orderItems}" var="item">
+        <div class="flex border-round shadow-2 m-2 p-3 align-items-center bg-white">
+            <h:graphicImage value="#{item.product.imageURL}" width="100" class="mr-3"/>
+            <div>
+                <p><strong>Name:</strong> #{item.product.name}</p>
+                <p><strong>Price:</strong> $#{item.product.price}</p>
+                <p><strong>Quantity:</strong> #{item.quantity}</p>
+                <p><strong>Total:</strong>
+                    <h:outputText value="#{item.product.price * item.quantity}">
+                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2"/>
+                    </h:outputText>
+                </p>
+            </div>
+        </div>
+    </ui:repeat>
+
+    <h:link outcome="user-details" value="← Back to My Orders" styleClass="mt-4 inline-block text-blue-600" />
+</h:body>
+</html>

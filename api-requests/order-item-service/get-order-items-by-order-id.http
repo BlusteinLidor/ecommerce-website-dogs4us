@@ -1,0 +1,4 @@
+### GET request to get all order items by order id
+GET http://localhost:4000/order-items/orderId/69cb6089-1526-4599-b968-2dfe9dd65f59
+
+###

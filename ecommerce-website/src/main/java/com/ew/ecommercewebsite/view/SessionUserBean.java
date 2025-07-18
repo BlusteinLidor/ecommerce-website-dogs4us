@@ -18,8 +18,6 @@ import java.io.Serializable;
 @SessionScoped
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SessionUserBean implements Serializable {
-
-
     private User user;
     private final int cartItemCount = 0;
 

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderItemService {
@@ -60,5 +61,13 @@ public class OrderItemService {
                 () -> new OrderItemNotFoundException("Order item not found with ID: " + id));
 
         orderItemRepository.delete(orderItem);
+    }
+
+    public List<OrderItemResponseDTO> getOrderItemsByOrderId(UUID orderId){
+        List<OrderItem> orderItems = orderItemRepository.findAll();
+        List<OrderItemResponseDTO> orderItemResponseDTOs = orderItems.stream()
+                .filter(orderItem -> orderItem.getId().getOrderId().equals(orderId))
+                .map(orderItem -> OrderItemMapper.toDTO(orderItem)).toList();
+        return orderItemResponseDTOs;
     }
 }

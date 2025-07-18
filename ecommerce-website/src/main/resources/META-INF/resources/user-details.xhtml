@@ -28,9 +28,16 @@
             <h3 class="mt-4 mb-2 font-bold text-lg">Past Orders</h3>
             <ui:repeat value="#{userDetailsPageBean.orders}" var="order">
                 <div class="border-bottom-1 py-2">
-                    <p>Order ID: #{userDetailsPageBean.getOrderDisplayId(order.id)}</p>
+                    <h:link outcome="order-details">
+                        <f:param name="id" value="#{order.id}" />
+                        <p>Order #: #{userDetailsPageBean.getOrderDisplayId(order.id)}</p>
+                    </h:link>
                     <p>Date: #{order.orderDate}</p>
-                    <p>Total: $#{order.totalAmount}</p>
+                    <h:outputText value="Total: "/>
+                    <h:outputText value="#{order.totalAmount}">
+                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2" />
+                    </h:outputText>
+<!--                    <p>Total: $#{order.totalAmount}</p>-->
                 </div>
             </ui:repeat>
         </div>

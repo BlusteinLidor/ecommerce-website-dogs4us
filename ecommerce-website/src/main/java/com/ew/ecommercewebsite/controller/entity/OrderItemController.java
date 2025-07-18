@@ -3,6 +3,7 @@ package com.ew.ecommercewebsite.controller.entity;
 import com.ew.ecommercewebsite.dto.entity.OrderItemRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.OrderItemResponseDTO;
 import com.ew.ecommercewebsite.service.entity.OrderItemService;
+import com.ew.ecommercewebsite.service.entity.OrderService;
 import com.ew.ecommercewebsite.utils.OrderItemId;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
@@ -17,9 +18,11 @@ import java.util.UUID;
 @RequestMapping("/order-items")
 public class OrderItemController {
     private final OrderItemService orderItemService;
+    private final OrderService orderService;
 
-    public OrderItemController(OrderItemService orderItemService){
+    public OrderItemController(OrderItemService orderItemService, OrderService orderService){
         this.orderItemService = orderItemService;
+        this.orderService = orderService;
     }
 
     @GetMapping
@@ -48,5 +51,11 @@ public class OrderItemController {
         OrderItemId id = new OrderItemId(orderId, productId);
         orderItemService.deleteOrderItem(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/orderId/{orderId}")
+    public ResponseEntity<List<OrderItemResponseDTO>> getOrderItemsByOrderId(@PathVariable UUID orderId){
+        List<OrderItemResponseDTO> orderItemResponseDTOs = orderItemService.getOrderItemsByOrderId(orderId);
+        return ResponseEntity.ok().body(orderItemResponseDTOs);
     }
 }

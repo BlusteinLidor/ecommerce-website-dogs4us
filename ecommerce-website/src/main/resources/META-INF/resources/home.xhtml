@@ -9,52 +9,9 @@
     <title>Dogs4Us</title>
     <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
     <h:outputStylesheet library="assets" name="css/layout.css"/>
-<!--    <script>-->
-<!--        async function logout() {-->
-<!--            await fetch('/auth/logout', {-->
-<!--                method: 'POST'-->
-<!--            })-->
-<!--                .then(response => {-->
-<!--                    if(response.ok){-->
-<!--                        window.location.href = "home.xhtml?faces-redirect=true";-->
-<!--                    }-->
-<!--                });-->
-<!--        }-->
-<!--    </script>-->
 </h:head>
 
 <h:body styleClass="layout-wrapper bg-gray-50">
-
-<!--    &lt;!&ndash; 🔵 Top Navigation Bar &ndash;&gt;-->
-<!--    <div class="flex justify-content-between align-items-center p-3 shadow-3 bg-white sticky top-0 z-5">-->
-<!--        &lt;!&ndash; Logo &ndash;&gt;-->
-<!--        <div class="text-3xl font-bold text-blue-600">Dogs4Us</div>-->
-
-<!--        &lt;!&ndash; Navigation &ndash;&gt;-->
-<!--        <div class="flex gap-4 text-lg">-->
-<!--            <h:link outcome="/home" value="Home" />-->
-<!--            <h:link outcome="/products" value="Products" />-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Auth + Cart &ndash;&gt;-->
-<!--        <div class="flex gap-3 align-items-center">-->
-<!--            <h:panelGroup rendered="#{sessionUserBean.user == null}">-->
-<!--                <h:link outcome="/login" value="Login" styleClass="text-sm" />-->
-<!--            </h:panelGroup>-->
-<!--            <h:panelGroup rendered="#{sessionUserBean.user != null}">-->
-<!--                <span class="text-sm mr-2">Hello, #{sessionUserBean.user.name}</span>-->
-<!--                <h:link onclick="logout(); return false;" value="Logout" styleClass="text-sm" />-->
-<!--            </h:panelGroup>-->
-
-<!--            <h:link outcome="/cart.xhtml" styleClass="relative">-->
-<!--                <p:graphicImage name="assets/img/cart-icon.png" alt="Cart" width="24"/>-->
-<!--                <span class="bg-red-500 text-white text-xs px-1 border-circle absolute top-0 right-0"-->
-<!--                      style="transform: translate(50%, -50%);">-->
-<!--                    #{cartPageBean.cartItemCount}-->
-<!--                </span>-->
-<!--            </h:link>-->
-<!--        </div>-->
-<!--    </div>-->
 
     <!-- 🔵 Top Navigation Bar -->
     <ui:include src="navbar.xhtml"/>
