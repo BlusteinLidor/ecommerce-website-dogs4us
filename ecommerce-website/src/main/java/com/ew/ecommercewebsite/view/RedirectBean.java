@@ -27,11 +27,11 @@ public class RedirectBean {
         }
     }
 
-    public void redirectProduct() throws IOException{
-        String productId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
-        if (productId == null || productId.isBlank()){
-            FacesContext.getCurrentInstance().getExternalContext()
-                    .redirect("home.xhtml?faces-redirect=true");
-        }
-    }
+//    public void redirectProduct() throws IOException{
+//        String productId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+//        if (productId == null || productId.isBlank()){
+//            FacesContext.getCurrentInstance().getExternalContext()
+//                    .redirect("home.xhtml?faces-redirect=true");
+//        }
+//    }
 }

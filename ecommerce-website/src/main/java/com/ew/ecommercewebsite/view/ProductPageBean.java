@@ -11,6 +11,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -70,17 +71,21 @@ public class ProductPageBean implements Serializable {
     }
 
     @PostConstruct
-    public void init(){
-        String productId = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
+    public void init() throws IOException{
+        String productIdContext = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
 
-        if(productId != null){
+        if(productIdContext != null && !productIdContext.isBlank()){
             try {
-                URL url = new URL("http://localhost:4000/products/" + productId);
+                URL url = new URL("http://localhost:4000/products/" + productIdContext);
                 ObjectMapper mapper = new ObjectMapper();
                 this.product = mapper.readValue(url, ProductResponseDTO.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        else{
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .redirect("home.xhtml?faces-redirect=true");
         }
     }
 

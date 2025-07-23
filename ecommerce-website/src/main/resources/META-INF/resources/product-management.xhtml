@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+    <f:event type="preRenderView" listener="#{productManagementBean.redirectIfNotAdmin}" />
+</f:metadata>
+<h:head>
+    <title>Product Management</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:messages globalOnly="true" style="color:red;" />
+</h:head>
+
+<h:body styleClass="layout-wrapper bg-gray-50">
+    <ui:include src="navbar.xhtml"/>
+
+    <div class="p-4">
+        <h2 class="text-2xl font-bold mb-4">🛠️ Product Management</h2>
+
+        <!-- Add / Edit Form -->
+        <h:form id="productForm" rendered="#{sessionUserBean.user.isAdmin}">
+            <h:panelGrid columns="2" cellpadding="5" styleClass="mb-4 shadow-2 p-3 bg-white border-round w-full sm:w-30rem">
+
+                <h:outputLabel for="name" value="Name:" />
+                <h:inputText id="name" value="#{productManagementBean.selectedProduct.name}" required="true"/>
+
+                <h:outputLabel for="description" value="Description:" />
+                <h:inputTextarea id="description" value="#{productManagementBean.selectedProduct.description}" />
+
+                <h:outputLabel for="price" value="Price:" />
+                <h:inputText id="price" value="#{productManagementBean.selectedProduct.price}" required="true"/>
+
+                <h:outputLabel for="imageURL" value="Image URL:" />
+                <h:inputText id="imageURL" value="#{productManagementBean.selectedProduct.imageURL}" required="true"/>
+
+                <h:outputLabel for="category" value="Category:" />
+                <h:inputText id="category" value="#{productManagementBean.selectedProduct.category}" required="true"/>
+
+                <h:outputLabel for="stockQuantity" value="Stock Quantity:" />
+                <h:inputText id="stockQuantity" value="#{productManagementBean.selectedProduct.stockQuantity}" required="true"/>
+
+                <h:outputLabel for="customizableFields" value="Customizable Fields:" />
+                <h:inputText id="customizableFields" value="#{productManagementBean.selectedProduct.customizableFields}" />
+
+                <h:outputLabel />
+                <h:commandButton value="#{productManagementBean.editMode ? 'Update' : 'Add'} Product"
+                                 action="#{productManagementBean.saveProduct}" styleClass="p-button p-button-success" />
+            </h:panelGrid>
+            <h:message for="productForm" style="color:red;" />
+        </h:form>
+
+        <!-- Product List -->
+        <h:form id="listForm">
+            <ui:repeat value="#{productManagementBean.products}" var="prod">
+                <div class="flex justify-content-between align-items-center border-round shadow-1 bg-white p-3 my-2">
+                    <div>
+                        <h:graphicImage value="#{prod.imageURL}" alt="#{prod.name}"
+                                        style="width: 100%; border-radius: 8px; object-fit: cover; max-height: 100px;" />
+                        <h4>#{prod.name}</h4>
+                        <p>#{prod.description}</p>
+                        <p><strong>$#{prod.price}</strong></p>
+                    </div>
+                    <div class="flex gap-2">
+                        <h:commandButton value="Edit" action="#{productManagementBean.editProduct(prod)}"
+                                         styleClass="p-button p-button-warning" />
+                        <h:commandButton value="Delete" action="#{productManagementBean.deleteProduct(prod.id)}"
+                                         styleClass="p-button p-button-danger" />
+                    </div>
+                </div>
+            </ui:repeat>
+        </h:form>
+    </div>
+
+</h:body>
+</html>

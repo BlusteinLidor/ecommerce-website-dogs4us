@@ -32,6 +32,9 @@
     <div class="flex gap-4 text-lg">
         <h:link outcome="/home" value="Home" />
         <h:link outcome="/products" value="Products" />
+        <h:panelGroup rendered="#{sessionUserBean.user.isAdmin}">
+            <h:link outcome="/product-management" value="Manage Products" />
+        </h:panelGroup>
     </div>
 
     <!-- Auth + Cart -->
