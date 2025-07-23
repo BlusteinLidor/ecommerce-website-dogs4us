@@ -3,6 +3,9 @@
       xmlns:h="jakarta.faces.html"
       xmlns:f="jakarta.faces.core"
       xmlns:ui="jakarta.faces.facelets">
+<f:metadata>
+    <f:event type="preRenderView" listener="#{redirectBean.redirectOrderConfirmation}" />
+</f:metadata>
 <h:head>
     <title>Order Confirmation - Dogs4Us</title>
     <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>

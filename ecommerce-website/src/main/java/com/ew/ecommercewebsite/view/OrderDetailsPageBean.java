@@ -9,6 +9,7 @@ import jakarta.inject.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class OrderDetailsPageBean implements Serializable{
         this.restTemplate = new RestTemplate();
     }
 
-    public void init() {
+    public void init() throws IOException {
         if (orderId != null) {
             String url = "http://localhost:4000/order-items/orderId/" + orderId;
             try {
@@ -43,6 +44,10 @@ public class OrderDetailsPageBean implements Serializable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        else{
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .redirect("home.xhtml?faces-redirect=true");
         }
     }
 

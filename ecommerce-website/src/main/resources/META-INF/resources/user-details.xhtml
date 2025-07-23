@@ -34,7 +34,7 @@
                     </h:link>
                     <p>Date: #{order.orderDate}</p>
                     <h:outputText value="Total: "/>
-                    <h:outputText value="#{order.totalAmount}">
+                    <h:outputText value="#{order.totalAmount + 0}">
                         <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2" />
                     </h:outputText>
 <!--                    <p>Total: $#{order.totalAmount}</p>-->

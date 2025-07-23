@@ -1,4 +1,4 @@
 ### DELETE request to delete an order
-DELETE http://localhost:4000/orders/223e4567-e89b-12d3-a456-426614174000
+DELETE http://localhost:4000/orders/2c328c27-278b-425d-9d20-6974747a5f80
 
 ###

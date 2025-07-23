@@ -35,7 +35,7 @@ public class CheckoutPageBean implements Serializable {
     private String phone;
 
     @Inject
-    public CheckoutPageBean(@Named CartPageBean cartPageBean) {
+    public CheckoutPageBean(CartPageBean cartPageBean) {
         this.cartPageBean = cartPageBean;
     }
 
@@ -64,7 +64,6 @@ public class CheckoutPageBean implements Serializable {
     }
 
     public void placeOrder() {
-        // TODO: Implement actual order saving logic here (call order endpoint, etc.)
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Order placed successfully!", null));
 
@@ -102,6 +101,8 @@ public class CheckoutPageBean implements Serializable {
         String deleteCartItemsUrl = "http://localhost:4000/cart-items/userId/" + userId;
 
         try{
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .getSessionMap().put("orderConfirmed", true);
             cartPageBean.setCartItemCount(0);
             FacesContext.getCurrentInstance().getExternalContext()
                     .redirect("order-confirmation.xhtml?faces-redirect=true");
