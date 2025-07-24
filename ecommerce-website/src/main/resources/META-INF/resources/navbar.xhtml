@@ -35,6 +35,9 @@
         <h:panelGroup rendered="#{sessionUserBean.user.isAdmin}">
             <h:link outcome="/product-management" value="Manage Products" />
         </h:panelGroup>
+        <h:panelGroup rendered="#{sessionUserBean.user.isAdmin}">
+            <h:link outcome="/order-management" value="Manage Orders" />
+        </h:panelGroup>
     </div>
 
     <!-- Auth + Cart -->

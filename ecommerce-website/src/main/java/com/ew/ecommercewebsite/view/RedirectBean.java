@@ -1,6 +1,7 @@
 package com.ew.ecommercewebsite.view;
 
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -24,6 +25,17 @@ public class RedirectBean {
                 ! (Boolean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("orderConfirmed")) {
             FacesContext.getCurrentInstance().getExternalContext()
                     .redirect("home.xhtml?faces-redirect=true");
+        }
+    }
+
+    public void redirectToPreviousPage() throws IOException {
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        String referer = ec.getRequestHeaderMap().get("referer");
+
+        if (referer != null) {
+            ec.redirect(referer);
+        } else {
+            ec.redirect("home.xhtml"); // Fallback
         }
     }
 

@@ -9,6 +9,7 @@ import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -41,17 +42,37 @@ public class ProductManagementBean implements Serializable {
     public void fetchProducts() {
         String url = "http://localhost:4000/products";
         products = Arrays.asList(restTemplate.getForObject(url, ProductResponseDTO[].class));
+        System.out.println("Products fetched: " + products.size());
+    }
+
+    public void testFunc(){
+        System.out.println("in test");
     }
 
     public void saveProduct() {
         String url = "http://localhost:4000/products";
-
+        System.out.println("in save product");
         if (editMode) {
             restTemplate.put(url + "/" + currentProductId, selectedProduct);
+            System.out.println("product name in put: " + selectedProduct.getName());
         } else {
-            ResponseEntity<ProductResponseDTO> response = restTemplate.postForEntity(url, selectedProduct, ProductResponseDTO.class);
-            ProductResponseDTO productResponse = response.getBody();
-            System.out.println("product" + productResponse);
+//            ResponseEntity<ProductResponseDTO> response = restTemplate.postForEntity(url, selectedProduct, ProductResponseDTO.class);
+            try {
+                ResponseEntity<ProductResponseDTO> response =
+                        restTemplate.postForEntity(url, selectedProduct, ProductResponseDTO.class);
+
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    System.out.println("Product saved: " + response.getBody().getName());
+                } else {
+                    System.out.println("Unexpected response: " + response.getStatusCode());
+                }
+
+            } catch (HttpClientErrorException e) {
+                System.out.println("Client error: " + e.getStatusCode());
+                System.out.println(e.getResponseBodyAsString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Save product called"));
         }
@@ -76,7 +97,7 @@ public class ProductManagementBean implements Serializable {
         editMode = true;
     }
 
-    public void deleteProduct(UUID id) {
+    public void deleteProduct(String id) {
         restTemplate.delete("http://localhost:4000/products/" + id);
         fetchProducts();
     }

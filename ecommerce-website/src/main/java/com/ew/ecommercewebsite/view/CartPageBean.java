@@ -1,8 +1,10 @@
 package com.ew.ecommercewebsite.view;
 
+import com.ew.ecommercewebsite.dto.entity.CartItemRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
 import com.ew.ecommercewebsite.dto.entity.CartItemWithProductResponseDTO;
 import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
+import com.ew.ecommercewebsite.service.entity.CartItemService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.annotation.ManagedProperty;
 import jakarta.faces.application.FacesMessage;
@@ -30,6 +32,11 @@ public class CartPageBean implements Serializable {
     private List<CartItemWithProductResponseDTO> cartItems;
     private int cartItemCount;
     private double totalCartPrice;
+    private final CartItemService cartItemService;
+
+    public CartPageBean(CartItemService cartItemService) {
+        this.cartItemService = cartItemService;
+    }
 
     @PostConstruct
     public void init(){
@@ -39,6 +46,11 @@ public class CartPageBean implements Serializable {
             return;
         }
 
+        fetchCart();
+
+    }
+
+    public void fetchCart() {
         cartItems = new ArrayList<>();
         try{
             UUID userId = sessionUserBean.getUser().getId();
@@ -76,7 +88,37 @@ public class CartPageBean implements Serializable {
         totalCartPrice = cartItems.stream()
                 .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
                 .sum();
+    }
 
+    public void incrementQuantity(CartItemResponseDTO cartItem) {
+        cartItem.setQuantity(cartItem.getQuantity() + 1);
+        updateCart(cartItem);
+    }
+
+    public void decrementQuantity(CartItemResponseDTO cartItem) {
+        int quantity = Integer.parseInt(cartItem.getQuantity());
+        if (quantity > 1) {
+            cartItem.setQuantity(String.valueOf(quantity - 1));
+            updateCart(cartItem);
+        } else {
+            removeItem(cartItem);
+        }
+    }
+
+    public void removeItem(CartItemResponseDTO cartItem) {
+        restTemplate.delete("http://localhost:4000/cart-items/userId/" + cartItem.getUserId() + "/productId/" + cartItem.getProductId());
+        fetchCart(); // Refresh
+    }
+
+    private void updateCart(CartItemResponseDTO cartItem) {
+        // cartItemResponseDTo to cartItemRequestDTO
+        CartItemRequestDTO cartItemRequestDTO = new CartItemRequestDTO();
+        cartItemRequestDTO.setQuantity(cartItem.getQuantity());
+        cartItemRequestDTO.setUserId(cartItem.getUserId());
+        cartItemRequestDTO.setProductId(cartItem.getProductId());
+        cartItemRequestDTO.setCustomizationPreview(cartItem.getCustomizationPreview());
+        restTemplate.put("http://localhost:4000/cart-items/userId/" + cartItem.getUserId() + "/productId/" + cartItem.getProductId(), cartItemRequestDTO);
+        fetchCart();
     }
 
     public List<CartItemWithProductResponseDTO> getCartItems(){
