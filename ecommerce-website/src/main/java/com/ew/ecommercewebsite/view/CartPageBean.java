@@ -41,8 +41,6 @@ public class CartPageBean implements Serializable {
     @PostConstruct
     public void init(){
         if (sessionUserBean == null || sessionUserBean.getUser() == null) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Please login", null));
             return;
         }
 

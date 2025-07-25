@@ -16,35 +16,61 @@
     <!-- 🔵 Top Navigation Bar -->
     <ui:include src="navbar.xhtml"/>
 
-    <!-- Product -->
-    <div class="grid px-4">
-        <h:form id="productForm">
-            <!-- Product details... -->
-            <h1>#{productPageBean.product.name}</h1>
-            <h:graphicImage value="#{productPageBean.product.imageURL}" alt="#{productPageBean.product.name}" style="width:400px; border-radius:8px;" />
-            <p><strong>Description:</strong> #{productPageBean.product.description}</p>
-            <p><strong>Price:</strong> $#{productPageBean.product.price}</p>
+    <!-- 🐶 Product Display -->
+    <div class="grid p-4">
+        <div class="col-12 md:col-10 lg:col-8 mx-auto">
+            <h:form id="productForm" styleClass="surface-card border-round p-4 shadow-3">
 
-            <div class="flex align-items-center gap-2 mt-2">
-                <h:commandButton value="-" action="#{productPageBean.decrementQuantity}" styleClass="p-button p-button-secondary">
-                    <f:ajax render="quantityDisplay" />
-                </h:commandButton>
+                <div class="flex flex-column md:flex-row gap-4">
+                    <!-- 🖼 Image -->
+                    <h:graphicImage value="#{productPageBean.product.imageURL}"
+                                    alt="#{productPageBean.product.name}"
+                                    styleClass="w-full md:w-10 border-round shadow-1" />
 
-                <h:outputText id="quantityDisplay" value="#{productPageBean.quantity}" styleClass="text-xl" />
+                    <!-- 📄 Info & Controls -->
+                    <div class="flex flex-column gap-3 w-full">
+                        <h2 class="text-3xl font-bold text-gray-800">#{productPageBean.product.name}</h2>
 
-                <h:commandButton value="+" action="#{productPageBean.incrementQuantity}" styleClass="p-button p-button-secondary">
-                    <f:ajax render="quantityDisplay" />
-                </h:commandButton>
-            </div>
+                        <p class="text-base text-gray-700"><strong>Description:</strong><br/>#{productPageBean.product.description}</p>
 
-            <!-- 🛒 Add to Cart Button -->
-            <h:commandButton value="Add to Cart"
-                             action="#{productPageBean.addToCart}"
-                             disabled="#{sessionUserBean.user == null}"
-                             styleClass="mt-3 p-button p-button-success" />
-            <h:messages globalOnly="true" styleClass="mb-3 text-green-700 text-sm font-bold" />
-        </h:form>
-</div>
+                        <p class="text-lg font-bold text-orange-800">
+                            $#{productPageBean.product.price}
+                        </p>
+
+                        <!-- 🔢 Quantity Controls -->
+                        <div class="flex align-items-center gap-2">
+                            <h:commandButton value="−"
+                                             action="#{productPageBean.decrementQuantity}"
+                                             styleClass="p-button p-button-secondary p-button-rounded">
+                                <f:ajax render="quantityDisplay" />
+                            </h:commandButton>
+
+                            <h:outputText id="quantityDisplay" value="#{productPageBean.quantity}" styleClass="text-xl font-bold text-gray-800" />
+
+                            <h:commandButton value="+"
+                                             action="#{productPageBean.incrementQuantity}"
+                                             styleClass="p-button p-button-secondary p-button-rounded">
+                                <f:ajax render="quantityDisplay" />
+                            </h:commandButton>
+                        </div>
+
+                        <!-- 🛒 Add to Cart -->
+                        <h:commandButton value="Add to Cart"
+                                         action="#{productPageBean.addToCart}"
+                                         rendered="#{sessionUserBean.user != null}"
+                                         styleClass="mt-3 p-button p-button-success text-white bg-orange-900 text-lg" />
+                        <h:commandButton value="Login to add to cart"
+                                         disabled="#{sessionUserBean.user == null}"
+                                         rendered="#{sessionUserBean.user == null}"
+                                         styleClass="mt-3 p-button p-button-success text-white bg-gray-500 text-lg" />
+
+                        <!-- 📝 Messages -->
+                        <h:messages globalOnly="true" styleClass="text-green-700 text-sm font-bold mt-2" />
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </div>
 
     <!-- 📦 Footer -->
     <footer class="mt-6 p-4 bg-gray-900 text-white text-center text-sm">
@@ -53,4 +79,3 @@
 
 </h:body>
 </html>
-

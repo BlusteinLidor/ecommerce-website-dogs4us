@@ -24,7 +24,8 @@
                     <h:link outcome="product" includeViewParams="true">
                         <f:param name="id" value="#{product.id}" />
                         <h:graphicImage value="#{product.imageURL}" alt="#{product.name}"
-                                        style="width: 100%; border-radius: 8px; object-fit: cover; max-height: 250px;" />
+                                        styleClass="w-full h-15rem border-round shadow-2"
+                                        style="object-fit: contain; background-color: white; padding: 1rem;" />
                         <h4 class="mt-2 mb-1 text-lg font-bold">#{product.name}</h4>
                         <p class="text-sm text-gray-600">#{product.description}</p>
                     </h:link>
