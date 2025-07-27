@@ -37,22 +37,28 @@
                     </div>
 
                     <!-- 🔢 Quantity Controls -->
-                    <div class="flex flex-column align-items-center">
-                        <div class="flex gap-2 align-items-center mb-2">
-                            <h:commandButton value="−"
-                                             action="#{cartPageBean.decrementQuantity(item.cartItem)}"
-                                             styleClass="p-button p-button-rounded p-button-secondary" />
-                            <span class="text-lg font-bold">#{item.cartItem.quantity}</span>
-                            <h:commandButton value="+"
-                                             action="#{cartPageBean.incrementQuantity(item.cartItem)}"
-                                             styleClass="p-button p-button-rounded p-button-secondary" />
+                        <div class="flex flex-column align-items-center">
+                            <div class="flex gap-2 align-items-center mb-2">
+                                <h:panelGroup rendered="#{item.product.stockQuantity != 0}">
+                                    <h:commandButton value="−"
+                                                    action="#{cartPageBean.decrementQuantity(item.cartItem)}"
+                                                    styleClass="p-button p-button-rounded p-button-secondary" />
+                                    <span class="text-lg font-bold">#{item.cartItem.quantity}</span>
+                                    <h:commandButton value="+"
+                                                    action="#{cartPageBean.incrementQuantity(item.cartItem)}"
+                                                    styleClass="p-button p-button-rounded p-button-secondary" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{item.product.stockQuantity == 0}">
+                                    <p><strong>Out of stock</strong></p>
+                                </h:panelGroup>
+                            </div>
+
+                            <!-- ❌ Remove Button -->
+                            <h:commandButton value="Remove"
+                                             action="#{cartPageBean.removeItem(item.cartItem)}"
+                                             styleClass="p-button p-button-danger p-button-sm" />
                         </div>
 
-                        <!-- ❌ Remove Button -->
-                        <h:commandButton value="Remove"
-                                         action="#{cartPageBean.removeItem(item.cartItem)}"
-                                         styleClass="p-button p-button-danger p-button-sm" />
-                    </div>
                 </div>
             </h:form>
         </ui:repeat>
@@ -69,13 +75,21 @@
             <h:form>
                 <h:commandButton value="Proceed to Checkout"
                                  action="/checkout.xhtml?faces-redirect=true"
-                                 rendered="#{not cartPageBean.cartEmpty}"
+                                 rendered="#{not cartPageBean.cartEmpty and not cartPageBean.itemOutOfStock}"
                                  styleClass="ml-auto p-button p-button-success text-white bg-orange-900 text-lg p-3 border-round" />
                 <h:commandButton value="Cart is empty"
-                                 disabled="#{cartPageBean.cartEmpty}"
+                                 disabled="true"
                                  rendered="#{cartPageBean.cartEmpty}"
                                  styleClass="ml-auto p-button p-button-success text-white bg-gray-500 text-lg p-3 border-round" />
+                <h:commandButton value="One or more items are out of stock"
+                                 disabled="true"
+                                 rendered="#{cartPageBean.itemOutOfStock and not cartPageBean.cartEmpty}"
+                                 styleClass="ml-auto p-button p-button-success text-white bg-gray-500 text-lg p-3 border-round" />
             </h:form>
+        </div>
+        <div class="flex justify-content-end flex-wrap">
+            <!-- 📝 Messages -->
+            <h:messages globalOnly="true" styleClass="text-green-700 text-sm font-bold mt-2" />
         </div>
     </h:body>
 

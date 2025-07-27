@@ -95,10 +95,33 @@ public class CheckoutPageBean implements Serializable {
             orderItem.setUnitPrice(unitPrice);
             orderItem.setCustomizationReference(customizationRef);
             restTemplate.postForObject(createOrderItemUrl, orderItem, OrderItemResponseDTO.class);
+
+            // Reduce the stock quantity of the product
+            ProductRequestDTO product = new ProductRequestDTO();
+            // get productResponseDTO
+            ProductResponseDTO productResponseDTO = restTemplate.getForObject(
+                    "http://localhost:4000/products/" + productId, ProductResponseDTO.class);
+
+            List<String> customizableFields = new ArrayList<>();
+            customizableFields.add(productResponseDTO.getCustomizableFields());
+            product.setCustomizableFields(customizableFields);
+            product.setDescription(productResponseDTO.getDescription());
+            product.setPrice(productResponseDTO.getPrice());
+            int stockQuantity = Integer.parseInt(productResponseDTO.getStockQuantity());
+            int cartItemQuantity = Integer.parseInt(quantity);
+            int newStockQuantity = stockQuantity - cartItemQuantity;
+            product.setStockQuantity(String.valueOf(newStockQuantity));
+            product.setName(productResponseDTO.getName());
+            product.setImageURL(productResponseDTO.getImageURL());
+            product.setCategory(productResponseDTO.getCategory());
+
+            restTemplate.put("http://localhost:4000/products/" + productId, product);
+
         }
 
 
         String deleteCartItemsUrl = "http://localhost:4000/cart-items/userId/" + userId;
+
 
         try{
             FacesContext.getCurrentInstance().getExternalContext()

@@ -2,6 +2,7 @@ package com.ew.ecommercewebsite.view;
 
 import com.ew.ecommercewebsite.dto.entity.CartItemRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
+import com.ew.ecommercewebsite.exception.ProductOutOfStockException;
 import com.ew.ecommercewebsite.model.Product;
 import com.ew.ecommercewebsite.repository.CartItemRepository;
 import com.ew.ecommercewebsite.utils.CartItemId;
@@ -15,6 +16,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.annotation.SessionScope;
 
@@ -99,20 +102,40 @@ public class ProductPageBean implements Serializable {
         dto.setCustomizationPreview(""); // or null if not used
         CartItemId cartItemId = new CartItemId(userId, productId);
         if(cartItemRepository.existsById(cartItemId)){
-            int previousQuantity = cartItemRepository.findById(cartItemId).orElseThrow().getQuantity();
-            int newQuantity = previousQuantity + quantity;
-            dto.setQuantity(String.valueOf(newQuantity));
-            restTemplate.put("http://localhost:4000/cart-items/userId/"
-                    + userId.toString() + "/productId/" + productId.toString() , dto);
+            try{
+                int previousQuantity = cartItemRepository.findById(cartItemId).orElseThrow().getQuantity();
+                int newQuantity = previousQuantity + quantity;
+                dto.setQuantity(String.valueOf(newQuantity));
+                restTemplate.put("http://localhost:4000/cart-items/userId/"
+                        + userId.toString() + "/productId/" + productId.toString() , dto);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));
+            }
+            catch (HttpClientErrorException e){
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.getExternalContext().getFlash().setKeepMessages(true);
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Not enough in stock", null));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
         else{
-            dto.setQuantity(Integer.toString(quantity));
-            restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
-        }
-        cartPageBean.setCartItemCount(cartPageBean.getCartItemCount() + 1);
+            try{
+                dto.setQuantity(Integer.toString(quantity));
+                restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
 
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));
+                cartPageBean.setCartItemCount(cartPageBean.getCartItemCount() + 1);
+
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));
+            } catch (HttpClientErrorException e){
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.getExternalContext().getFlash().setKeepMessages(true);
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Not enough in stock", null));
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 
 }

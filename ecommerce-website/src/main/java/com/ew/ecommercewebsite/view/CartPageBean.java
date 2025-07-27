@@ -4,6 +4,7 @@ import com.ew.ecommercewebsite.dto.entity.CartItemRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
 import com.ew.ecommercewebsite.dto.entity.CartItemWithProductResponseDTO;
 import com.ew.ecommercewebsite.dto.entity.ProductResponseDTO;
+import com.ew.ecommercewebsite.exception.ProductOutOfStockException;
 import com.ew.ecommercewebsite.service.entity.CartItemService;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.annotation.ManagedProperty;
@@ -33,6 +34,7 @@ public class CartPageBean implements Serializable {
     private int cartItemCount;
     private double totalCartPrice;
     private final CartItemService cartItemService;
+    private boolean isItemOutOfStock;
 
     public CartPageBean(CartItemService cartItemService) {
         this.cartItemService = cartItemService;
@@ -43,13 +45,13 @@ public class CartPageBean implements Serializable {
         if (sessionUserBean == null || sessionUserBean.getUser() == null) {
             return;
         }
-
         fetchCart();
 
     }
 
     public void fetchCart() {
         cartItems = new ArrayList<>();
+        isItemOutOfStock = false;
         try{
             UUID userId = sessionUserBean.getUser().getId();
             String url = "http://localhost:4000/cart-items/userId/" + userId;
@@ -59,6 +61,11 @@ public class CartPageBean implements Serializable {
             for (CartItemResponseDTO item : items) {
                 String productUrl = "http://localhost:4000/products/" + item.getProductId();
                 ProductResponseDTO product = restTemplate.getForObject(productUrl, ProductResponseDTO.class);
+
+                if(Integer.parseInt(product.getStockQuantity()) == 0){
+                    isItemOutOfStock = true;
+                }
+
 
                 CartItemWithProductResponseDTO fullItem = new CartItemWithProductResponseDTO();
                 fullItem.setCartItem(item);
@@ -86,11 +93,20 @@ public class CartPageBean implements Serializable {
         totalCartPrice = cartItems.stream()
                 .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
                 .sum();
+
     }
 
     public void incrementQuantity(CartItemResponseDTO cartItem) {
-        cartItem.setQuantity(cartItem.getQuantity() + 1);
-        updateCart(cartItem);
+        cartItem.setQuantity(String.valueOf(Integer.parseInt(cartItem.getQuantity()) + 1));
+        try{
+            updateCart(cartItem);
+        } catch (HttpClientErrorException e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Not enough in stock", null));
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void decrementQuantity(CartItemResponseDTO cartItem) {
@@ -115,7 +131,15 @@ public class CartPageBean implements Serializable {
         cartItemRequestDTO.setUserId(cartItem.getUserId());
         cartItemRequestDTO.setProductId(cartItem.getProductId());
         cartItemRequestDTO.setCustomizationPreview(cartItem.getCustomizationPreview());
-        restTemplate.put("http://localhost:4000/cart-items/userId/" + cartItem.getUserId() + "/productId/" + cartItem.getProductId(), cartItemRequestDTO);
+        try{
+            restTemplate.put("http://localhost:4000/cart-items/userId/" + cartItem.getUserId() + "/productId/" + cartItem.getProductId(), cartItemRequestDTO);
+        } catch (HttpClientErrorException e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Not enough in stock", null));
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         fetchCart();
     }
 
@@ -137,5 +161,13 @@ public class CartPageBean implements Serializable {
 
     public void setCartItemCount(int cartItemCount) {
         this.cartItemCount = cartItemCount;
+    }
+
+    public boolean isItemOutOfStock() {
+        return isItemOutOfStock;
+    }
+
+    public void setItemOutOfStock(boolean itemOutOfStock) {
+        isItemOutOfStock = itemOutOfStock;
     }
 }

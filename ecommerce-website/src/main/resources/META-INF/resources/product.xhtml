@@ -57,11 +57,15 @@
                         <!-- 🛒 Add to Cart -->
                         <h:commandButton value="Add to Cart"
                                          action="#{productPageBean.addToCart}"
-                                         rendered="#{sessionUserBean.user != null}"
+                                         rendered="#{sessionUserBean.user != null and productPageBean.product.stockQuantity > 0}"
                                          styleClass="mt-3 p-button p-button-success text-white bg-orange-900 text-lg" />
                         <h:commandButton value="Login to add to cart"
-                                         disabled="#{sessionUserBean.user == null}"
-                                         rendered="#{sessionUserBean.user == null}"
+                                         disabled="true"
+                                         rendered="#{sessionUserBean.user == null and productPageBean.product.stockQuantity > 0}"
+                                         styleClass="mt-3 p-button p-button-success text-white bg-gray-500 text-lg" />
+                        <h:commandButton value="Out of stock"
+                                         rendered="#{productPageBean.product.stockQuantity == 0}"
+                                         disabled="true"
                                          styleClass="mt-3 p-button p-button-success text-white bg-gray-500 text-lg" />
 
                         <!-- 📝 Messages -->

@@ -4,9 +4,13 @@ import com.ew.ecommercewebsite.dto.entity.CartItemRequestDTO;
 import com.ew.ecommercewebsite.dto.entity.CartItemResponseDTO;
 import com.ew.ecommercewebsite.exception.CartItemIdAlreadyExistsException;
 import com.ew.ecommercewebsite.exception.CartItemNotFoundException;
+import com.ew.ecommercewebsite.exception.ProductNotFoundException;
+import com.ew.ecommercewebsite.exception.ProductOutOfStockException;
 import com.ew.ecommercewebsite.mapper.CartItemMapper;
 import com.ew.ecommercewebsite.model.CartItem;
+import com.ew.ecommercewebsite.model.Product;
 import com.ew.ecommercewebsite.repository.CartItemRepository;
+import com.ew.ecommercewebsite.repository.ProductRepository;
 import com.ew.ecommercewebsite.utils.CartItemId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,9 +22,11 @@ import java.util.UUID;
 @Service
 public class CartItemService {
     private final CartItemRepository cartItemRepository;
+    private final ProductRepository productRepository;
 
-    public CartItemService(CartItemRepository cartItemRepository) {
+    public CartItemService(CartItemRepository cartItemRepository, ProductRepository productRepository) {
         this.cartItemRepository = cartItemRepository;
+        this.productRepository = productRepository;
     }
 
     public List<CartItemResponseDTO> getCartItems(){
@@ -34,14 +40,18 @@ public class CartItemService {
 
     public CartItemResponseDTO createCartItem(CartItemRequestDTO cartItemRequestDTO){
         CartItem cartItem = CartItemMapper.toModel(cartItemRequestDTO);
+        Product product = productRepository.findById(UUID.fromString(cartItemRequestDTO.getProductId())).orElse(null);
+        if (product == null){
+            throw new ProductNotFoundException("Product with this ID does not exist "
+            + cartItemRequestDTO.getProductId());
+        }
         if (cartItemRepository.existsById(cartItem.getId())){
-//            CartItem originalCartItem = cartItemRepository.findById(cartItem.getId()).orElseThrow();
-//            int previousQuantity = originalCartItem.getQuantity();
-//            int quantityToAdd = Integer.parseInt(cartItemRequestDTO.getQuantity());
-//            int newQuantity = previousQuantity + quantityToAdd;
-//            originalCartItem.setQuantity(newQuantity);
             throw new CartItemIdAlreadyExistsException("Cart item with this ID already exists "
                     + cartItemRequestDTO.getUserId() + " " + cartItemRequestDTO.getProductId());
+        }
+        if (product.getStockQuantity() < cartItem.getQuantity()){
+            throw new ProductOutOfStockException("Product with this ID does not have enough stock "
+            + product.getId());
         }
         CartItem newCartItem = cartItemRepository.save(cartItem);
 
@@ -52,7 +62,15 @@ public class CartItemService {
         CartItem cartItem = cartItemRepository.findById(id).orElseThrow(
                 () -> new CartItemNotFoundException("Cart item not found with ID: " + id));
 
-        cartItem.setQuantity(Integer.parseInt(cartItemRequestDTO.getQuantity()));
+        Product product = productRepository.findById(UUID.fromString(cartItemRequestDTO.getProductId())).orElse(null);
+        int productQuantityLeft = product.getStockQuantity();
+        int cartItemQuantity = Integer.parseInt(cartItemRequestDTO.getQuantity());
+        if (productQuantityLeft < cartItemQuantity){
+            throw new ProductOutOfStockException("Product with this ID does not have enough stock "
+            + product.getId());
+        }
+
+        cartItem.setQuantity(cartItemQuantity);
         cartItem.setCustomizationPreview(cartItemRequestDTO.getCustomizationPreview());
 
         CartItem updatedCartItem = cartItemRepository.save(cartItem);
