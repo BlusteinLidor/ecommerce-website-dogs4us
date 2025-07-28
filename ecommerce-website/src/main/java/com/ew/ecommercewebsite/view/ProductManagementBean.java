@@ -8,6 +8,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -23,83 +25,105 @@ import java.util.UUID;
 @ViewScoped
 public class ProductManagementBean implements Serializable {
 
+    @Setter
+    @Getter
+    private ProductRequestDTO product;
+    private final RestTemplate restTemplate = new RestTemplate();
+    @Setter
+    @Getter
+    private String customizableFieldsString;
+    @Setter
+    @Getter
     private List<ProductResponseDTO> products;
-    private ProductRequestDTO selectedProduct = new ProductRequestDTO();
-    private boolean editMode = false;
-    private String currentProductId;
-
-
     @Inject
     private SessionUserBean sessionUserBean;
-
-    private RestTemplate restTemplate = new RestTemplate();
+    @Setter
+    @Getter
+    private boolean isEditMode = false;
+    @Setter
+    @Getter
+    private String selectedProductId;
 
     @PostConstruct
     public void init() {
+        product = new ProductRequestDTO();
         fetchProducts();
     }
 
     public void fetchProducts() {
         String url = "http://localhost:4000/products";
         products = Arrays.asList(restTemplate.getForObject(url, ProductResponseDTO[].class));
+        if (products.isEmpty()) {
+            products = new ArrayList<>();
+        }
         System.out.println("Products fetched: " + products.size());
     }
 
-    public void testFunc(){
-        System.out.println("in test");
-    }
-
     public void saveProduct() {
-        String url = "http://localhost:4000/products";
-        System.out.println("in save product");
-        if (editMode) {
-            restTemplate.put(url + "/" + currentProductId, selectedProduct);
-            System.out.println("product name in put: " + selectedProduct.getName());
-        } else {
-//            ResponseEntity<ProductResponseDTO> response = restTemplate.postForEntity(url, selectedProduct, ProductResponseDTO.class);
-            try {
-                ResponseEntity<ProductResponseDTO> response =
-                        restTemplate.postForEntity(url, selectedProduct, ProductResponseDTO.class);
-
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    System.out.println("Product saved: " + response.getBody().getName());
-                } else {
-                    System.out.println("Unexpected response: " + response.getStatusCode());
-                }
-
-            } catch (HttpClientErrorException e) {
-                System.out.println("Client error: " + e.getStatusCode());
-                System.out.println(e.getResponseBodyAsString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            List<String> customizableList = List.of(customizableFieldsString.splitWithDelimiters(",", 0));
+            product.setCustomizableFields(customizableList);
+            String url = "http://localhost:4000/products";
+            ResponseEntity<Void> response = restTemplate.postForEntity(url, product, Void.class);
+            System.out.println("Response status: " + response.getStatusCode());
+            fetchProducts();
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Save product called"));
-        }
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Product added successfully!", null));
 
-        selectedProduct = new ProductRequestDTO();
-        editMode = false;
-        fetchProducts();
+            product = new ProductRequestDTO(); // reset form
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to add product.", null));
+            e.printStackTrace();
+        }
     }
 
     public void editProduct(ProductResponseDTO prod) {
-        selectedProduct = new ProductRequestDTO();
-        currentProductId = prod.getId();
-        selectedProduct.setName(prod.getName());
-        selectedProduct.setDescription(prod.getDescription());
-        selectedProduct.setPrice(prod.getPrice());
-        selectedProduct.setCategory(prod.getCategory());
-        selectedProduct.setImageURL(prod.getImageURL());
-        List<String> customizableFields = new ArrayList<>();
-        customizableFields.add(prod.getCustomizableFields());
-        selectedProduct.setCustomizableFields(customizableFields);
-        selectedProduct.setStockQuantity(prod.getStockQuantity());
-        editMode = true;
+        isEditMode = true;
+        selectedProductId = prod.getId();
+        product.setName(prod.getName());
+        product.setDescription(prod.getDescription());
+        product.setPrice(prod.getPrice());
+        product.setCategory(prod.getCategory());
+        product.setImageURL(prod.getImageURL());
+        List<String> customizableList = new ArrayList<>();
+        if (prod.getCustomizableFields() != null || !prod.getCustomizableFields().isEmpty()) {
+            if(customizableFieldsString != null && customizableFieldsString.contains(",")){
+                customizableList = List.of(customizableFieldsString.splitWithDelimiters(",", 0));
+            }
+            else{
+                customizableList.add(customizableFieldsString);
+            }
+        }
+        product.setCustomizableFields(customizableList);
+        product.setStockQuantity(prod.getStockQuantity());
+    }
+
+    public void updateProduct() {
+        try{
+            restTemplate.put("http://localhost:4000/products/" + selectedProductId, product);
+            fetchProducts();
+            isEditMode = false;
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Product updated successfully!", null));
+        } catch(Exception e){
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to update product.", null));
+            e.printStackTrace();
+        }
     }
 
     public void deleteProduct(String id) {
         restTemplate.delete("http://localhost:4000/products/" + id);
         fetchProducts();
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Product deleted successfully!", null));
+    }
+
+    public void cancelEditMode() {
+        isEditMode = false;
+        selectedProductId = null;
+        product = new ProductRequestDTO();
     }
 
     public void redirectIfNotAdmin() throws IOException {
@@ -108,48 +132,5 @@ public class ProductManagementBean implements Serializable {
         }
     }
 
-    public List<ProductResponseDTO> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<ProductResponseDTO> products) {
-        this.products = products;
-    }
-
-    public ProductRequestDTO getSelectedProduct() {
-        return selectedProduct;
-    }
-
-    public void setSelectedProduct(ProductRequestDTO selectedProduct) {
-        this.selectedProduct = selectedProduct;
-    }
-
-    public boolean isEditMode() {
-        return editMode;
-    }
-
-    public void setEditMode(boolean editMode) {
-        this.editMode = editMode;
-    }
-
-    public String getCurrentProductId() {
-        return currentProductId;
-    }
-
-    public void setCurrentProductId(String currentProductId) {
-        this.currentProductId = currentProductId;
-    }
-
-    public SessionUserBean getSessionUserBean() {
-        return sessionUserBean;
-    }
-
-    public void setSessionUserBean(SessionUserBean sessionUserBean) {
-        this.sessionUserBean = sessionUserBean;
-    }
-
-    public RestTemplate getRestTemplate() {
-        return restTemplate;
-    }
 }
 

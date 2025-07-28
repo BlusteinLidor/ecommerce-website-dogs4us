@@ -10,7 +10,6 @@
 <h:head>
     <title>Product Management</title>
     <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
-    <h:messages globalOnly="true" style="color:red;" />
 </h:head>
 
 <h:body styleClass="layout-wrapper bg-gray-50">
@@ -19,37 +18,51 @@
     <div class="p-4">
         <h2 class="text-2xl font-bold mb-4">🛠️ Product Management</h2>
 
-        <!-- Add / Edit Form -->
-<!--        <h:form id="productForm" rendered="#{sessionUserBean.user.isAdmin}">-->
-        <h:form id="productForm">
-            <h:panelGrid columns="2" cellpadding="5" styleClass="mb-4 shadow-2 p-3 bg-white border-round w-full sm:w-30rem">
+        <h:form>
+            <div class="flex flex-column gap-3 mb-3">
+                <h:outputLabel for="name" value="Product Name"/>
+                <h:inputText id="name" value="#{productManagementBean.product.name}" required="true"
+                             styleClass="p-inputtext w-full"/>
 
-                <h:outputLabel for="name" value="Name:" />
-                <h:inputText id="name" value="#{productManagementBean.selectedProduct.name}" required="true"/>
+                <h:outputLabel for="description" value="Description"/>
+                <h:inputTextarea id="description" value="#{productManagementBean.product.description}" required="true"
+                                 styleClass="p-inputtextarea w-full" rows="3"/>
 
-                <h:outputLabel for="description" value="Description:" />
-                <h:inputTextarea id="description" value="#{productManagementBean.selectedProduct.description}" />
+                <h:outputLabel for="price" value="Price"/>
+                <h:inputText id="price" value="#{productManagementBean.product.price}" required="true"
+                             styleClass="p-inputtext w-full"/>
 
-                <h:outputLabel for="price" value="Price:" />
-                <h:inputText id="price" value="#{productManagementBean.selectedProduct.price}" required="true"/>
+                <h:outputLabel for="imageURL" value="Image URL"/>
+                <h:inputText id="imageURL" value="#{productManagementBean.product.imageURL}" required="true"
+                             styleClass="p-inputtext w-full"/>
 
-                <h:outputLabel for="imageURL" value="Image URL:" />
-                <h:inputText id="imageURL" value="#{productManagementBean.selectedProduct.imageURL}" required="true"/>
+                <h:outputLabel for="category" value="Category"/>
+                <h:inputText id="category" value="#{productManagementBean.product.category}" required="true"
+                             styleClass="p-inputtext w-full"/>
 
-                <h:outputLabel for="category" value="Category:" />
-                <h:inputText id="category" value="#{productManagementBean.selectedProduct.category}" required="true"/>
+                <h:outputLabel for="quantity" value="Quantity"/>
+                <h:inputText id="quantity" value="#{productManagementBean.product.stockQuantity}" required="true"
+                             styleClass="p-inputtext w-full"/>
 
-                <h:outputLabel for="stockQuantity" value="Stock Quantity:" />
-                <h:inputText id="stockQuantity" value="#{productManagementBean.selectedProduct.stockQuantity}" required="true"/>
+                <h:outputLabel for="custom" value="Custom"/>
+                <h:inputText id="custom" value="#{productManagementBean.customizableFieldsString}"
+                             styleClass="p-inputtext w-full"/>
+            </div>
 
-                <h:outputLabel for="customizableFields" value="Customizable Fields:" />
-                <h:inputText id="customizableFields" value="#{productManagementBean.selectedProduct.customizableFields}" />
-
-                <h:commandButton value="#{productManagementBean.editMode ? 'Update' : 'Add'} Product"
-                                 action="#{productManagementBean.saveProduct}" styleClass="p-button p-button-success" />
-            </h:panelGrid>
-            <h:message for="productForm" style="color:red;" />
+            <h:commandButton value="Add Product"
+                             rendered="#{not productManagementBean.editMode}"
+                             action="#{productManagementBean.saveProduct}"
+                             styleClass="p-button p-button-success mt-3"/>
+            <h:commandButton value="Update Product"
+                             rendered="#{productManagementBean.editMode}"
+                             action="#{productManagementBean.updateProduct()}"
+                             styleClass="p-button p-button-success mt-3"/>
+            <h:commandButton value="Cancel editing"
+                             rendered="#{productManagementBean.editMode}"
+                             action="#{productManagementBean.cancelEditMode}"
+                             styleClass="p-button p-button-success mt-3"/>
         </h:form>
+        <h:messages globalOnly="false" style="color:red;" />
 
         <!-- Product List -->
         <h:form id="listForm">
@@ -59,7 +72,10 @@
                         <h:graphicImage value="#{prod.imageURL}" alt="#{prod.name}"
                                         style="width: 100%; border-radius: 8px; object-fit: cover; max-height: 100px;" />
                         <h4>#{prod.name}</h4>
+                        <h6>#{prod.category}</h6>
+                        <br/>
                         <p>#{prod.description}</p>
+                        <p>In stock: #{prod.stockQuantity}</p>
                         <p><strong>$#{prod.price}</strong></p>
                     </div>
                     <div class="flex gap-2">
