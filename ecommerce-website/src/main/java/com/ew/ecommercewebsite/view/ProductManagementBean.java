@@ -89,7 +89,7 @@ public class ProductManagementBean implements Serializable {
         List<String> customizableList = new ArrayList<>();
         if (prod.getCustomizableFields() != null || !prod.getCustomizableFields().isEmpty()) {
             if(customizableFieldsString != null && customizableFieldsString.contains(",")){
-                customizableList = List.of(customizableFieldsString.splitWithDelimiters(",", 0));
+                customizableList = List.of(customizableFieldsString.split(","));
             }
             else{
                 customizableList.add(customizableFieldsString);
