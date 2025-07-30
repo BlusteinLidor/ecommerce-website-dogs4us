@@ -33,6 +33,18 @@
 
                         <p class="text-base text-gray-700"><strong>Description:</strong><br/>#{productPageBean.product.description}</p>
 
+                        <p class="text-base text-gray-700">
+                            <strong>Customization:</strong>
+                            <br/>
+                            <ui:repeat value="#{productPageBean.customFieldsDict}" var="customField">
+                                <div class="mb-3">
+                                    <label class="block text-sm font-medium mb-1">#{customField.key}</label>
+                                    <h:inputText value="#{customField.value}"
+                                                 styleClass="w-full p-2 border-1 border-gray-300 border-round"/>
+                                </div>
+                            </ui:repeat>
+                        </p>
+
                         <p class="text-lg font-bold text-orange-800">
                             $#{productPageBean.product.price}
                         </p>

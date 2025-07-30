@@ -125,7 +125,6 @@ public class CartPageBean implements Serializable {
     }
 
     private void updateCart(CartItemResponseDTO cartItem) {
-        // cartItemResponseDTo to cartItemRequestDTO
         CartItemRequestDTO cartItemRequestDTO = new CartItemRequestDTO();
         cartItemRequestDTO.setQuantity(cartItem.getQuantity());
         cartItemRequestDTO.setUserId(cartItem.getUserId());

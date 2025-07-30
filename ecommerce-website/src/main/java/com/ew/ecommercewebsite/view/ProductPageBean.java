@@ -14,6 +14,8 @@ import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,9 +27,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 @Named
 //@RequestScoped
@@ -40,6 +40,12 @@ public class ProductPageBean implements Serializable {
     private CartItemRepository cartItemRepository;
     private CartPageBean cartPageBean;
     private int quantity = 1;
+    @Getter
+    @Setter
+    private String customFields;
+    @Getter
+    @Setter
+    private Dictionary<String, String> customFieldsDict = new Hashtable<>();
 
     public ProductPageBean(){}
 
@@ -82,6 +88,7 @@ public class ProductPageBean implements Serializable {
                 URL url = new URL("http://localhost:4000/products/" + productIdContext);
                 ObjectMapper mapper = new ObjectMapper();
                 this.product = mapper.readValue(url, ProductResponseDTO.class);
+                getProductCustomizations();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -99,7 +106,8 @@ public class ProductPageBean implements Serializable {
         CartItemRequestDTO dto = new CartItemRequestDTO();
         dto.setUserId(userId.toString());
         dto.setProductId(productId.toString());
-        dto.setCustomizationPreview(""); // or null if not used
+        dto.setCustomizationPreview(customFieldsDict.toString());
+        System.out.println("Customization preview: " + customFieldsDict.toString());
         CartItemId cartItemId = new CartItemId(userId, productId);
         if(cartItemRepository.existsById(cartItemId)){
             try{
@@ -135,6 +143,26 @@ public class ProductPageBean implements Serializable {
             } catch (Exception e){
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void getProductCustomizations(){
+        customFields = product.getCustomizableFields();
+        if(customFields == null || customFields.isBlank()){
+            customFields = "None";
+        }
+        customFields = customFields.replaceAll("\\[", "").replaceAll("\\]","");
+
+        List<String> customFieldsList;
+        if(customFields.contains(",")){
+            customFieldsList = List.of(customFields.split(","));
+        }
+        else{
+            customFieldsList = List.of(customFields);
+        }
+
+        for(String s : customFieldsList){
+            customFieldsDict.put(s, "");
         }
     }
 

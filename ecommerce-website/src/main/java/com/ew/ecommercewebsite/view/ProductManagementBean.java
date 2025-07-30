@@ -61,7 +61,12 @@ public class ProductManagementBean implements Serializable {
 
     public void saveProduct() {
         try {
-            List<String> customizableList = List.of(customizableFieldsString.splitWithDelimiters(",", 0));
+            String[] tempArr = customizableFieldsString.split(",");
+            for (String s : tempArr) {
+                s = s.trim();
+            }
+            List<String> customizableList = List.of(tempArr);
+            System.out.println("Customizable fields list: " + customizableList);
             product.setCustomizableFields(customizableList);
             String url = "http://localhost:4000/products";
             ResponseEntity<Void> response = restTemplate.postForEntity(url, product, Void.class);
@@ -89,10 +94,17 @@ public class ProductManagementBean implements Serializable {
         List<String> customizableList = new ArrayList<>();
         if (prod.getCustomizableFields() != null || !prod.getCustomizableFields().isEmpty()) {
             if(customizableFieldsString != null && customizableFieldsString.contains(",")){
-                customizableList = List.of(customizableFieldsString.split(","));
+                String[] tempArr = customizableFieldsString.split(",");
+                for (String s : tempArr) {
+                    s = s.trim();
+                }
+                customizableList = List.of(tempArr);
+                System.out.println("Customizable fields list: " + customizableList);
             }
             else{
                 customizableList.add(customizableFieldsString);
+                System.out.println("Customizable field: " + customizableList);
+
             }
         }
         product.setCustomizableFields(customizableList);
