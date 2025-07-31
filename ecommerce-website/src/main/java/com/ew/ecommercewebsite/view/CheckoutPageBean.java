@@ -2,6 +2,7 @@ package com.ew.ecommercewebsite.view;
 
 import com.ew.ecommercewebsite.dto.entity.*;
 import com.ew.ecommercewebsite.model.CartItem;
+import com.ew.ecommercewebsite.utils.CustomField;
 import jakarta.annotation.PostConstruct;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -95,6 +96,29 @@ public class CheckoutPageBean implements Serializable {
             orderItem.setUnitPrice(unitPrice);
             orderItem.setCustomizationReference(customizationRef);
             restTemplate.postForObject(createOrderItemUrl, orderItem, OrderItemResponseDTO.class);
+
+//            Name: Billie; Phone: 050-6075637;
+            List<CustomField> customFields = new ArrayList<>();
+            String[] customSplitList = customizationRef.split(";");
+            for(String customField : customSplitList){
+                if(customField.contains(":")){
+                    customFields.add(new CustomField(customField.split(":")[0].trim(),
+                            customField.split(":")[1].trim()));
+                }
+            }
+            for(CustomField customField : customFields){
+                CustomizationRequestDTO customization = new CustomizationRequestDTO();
+                customization.setOrder(orderId);
+                customization.setProduct(productId);
+                customization.setFieldName(customField.getName());
+                if(customField.getValue() == null || customField.getValue().isEmpty()){
+                    customization.setFieldValue("-");
+                }
+                else{
+                    customization.setFieldValue(customField.getValue());   
+                }
+                restTemplate.postForObject("http://localhost:4000/customizations", customization, CustomizationResponseDTO.class);
+            }
 
             // Reduce the stock quantity of the product
             ProductRequestDTO product = new ProductRequestDTO();

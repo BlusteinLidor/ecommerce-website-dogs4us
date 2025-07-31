@@ -6,11 +6,14 @@ import com.ew.ecommercewebsite.exception.ProductOutOfStockException;
 import com.ew.ecommercewebsite.model.Product;
 import com.ew.ecommercewebsite.repository.CartItemRepository;
 import com.ew.ecommercewebsite.utils.CartItemId;
+import com.ew.ecommercewebsite.utils.CustomField;
+import com.ew.ecommercewebsite.utils.Data;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.faces.model.SelectItem;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -45,7 +48,13 @@ public class ProductPageBean implements Serializable {
     private String customFields;
     @Getter
     @Setter
-    private Dictionary<String, String> customFieldsDict = new Hashtable<>();
+    private List<CustomField> customFieldItemList = new ArrayList<>();
+    @Getter
+    @Setter
+    private List<String> colorSelectItemList = new ArrayList<>();
+    @Getter
+    @Setter
+    private List<String> sizeSelectItemList = new ArrayList<>();
 
     public ProductPageBean(){}
 
@@ -89,6 +98,8 @@ public class ProductPageBean implements Serializable {
                 ObjectMapper mapper = new ObjectMapper();
                 this.product = mapper.readValue(url, ProductResponseDTO.class);
                 getProductCustomizations();
+                sizeSelectItemList.addAll(Data.SIZE_LIST);
+                colorSelectItemList.addAll(Data.COLOR_LIST);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -106,8 +117,14 @@ public class ProductPageBean implements Serializable {
         CartItemRequestDTO dto = new CartItemRequestDTO();
         dto.setUserId(userId.toString());
         dto.setProductId(productId.toString());
-        dto.setCustomizationPreview(customFieldsDict.toString());
-        System.out.println("Customization preview: " + customFieldsDict.toString());
+        StringBuilder previewBuilder = new StringBuilder();
+        for (CustomField field : customFieldItemList) {
+            if(field.getValue() == null || field.getValue().isEmpty()){
+                field.setValue("-");
+            }
+            previewBuilder.append(field.getName()).append(": ").append(field.getValue()).append("; ");
+        }
+        dto.setCustomizationPreview(previewBuilder.toString().trim());
         CartItemId cartItemId = new CartItemId(userId, productId);
         if(cartItemRepository.existsById(cartItemId)){
             try{
@@ -152,7 +169,6 @@ public class ProductPageBean implements Serializable {
             customFields = "None";
         }
         customFields = customFields.replaceAll("\\[", "").replaceAll("\\]","");
-
         List<String> customFieldsList;
         if(customFields.contains(",")){
             customFieldsList = List.of(customFields.split(","));
@@ -160,9 +176,9 @@ public class ProductPageBean implements Serializable {
         else{
             customFieldsList = List.of(customFields);
         }
-
         for(String s : customFieldsList){
-            customFieldsDict.put(s, "");
+            CustomField field = new CustomField(s.trim(), "");
+            customFieldItemList.add(field);
         }
     }
 

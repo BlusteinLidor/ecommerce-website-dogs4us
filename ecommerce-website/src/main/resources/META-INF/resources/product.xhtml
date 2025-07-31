@@ -36,11 +36,24 @@
                         <p class="text-base text-gray-700">
                             <strong>Customization:</strong>
                             <br/>
-                            <ui:repeat value="#{productPageBean.customFieldsDict}" var="customField">
+                            <ui:repeat value="#{productPageBean.customFieldItemList}" var="customField">
                                 <div class="mb-3">
-                                    <label class="block text-sm font-medium mb-1">#{customField.key}</label>
-                                    <h:inputText value="#{customField.value}"
+                                    <label class="block text-sm font-medium mb-1">#{customField.name}</label>
+                                    <h:inputText value="#{customField.value}" rendered="#{customField.name == 'Name'
+                                    or customField.name == 'Phone'}"
                                                  styleClass="w-full p-2 border-1 border-gray-300 border-round"/>
+                                    <h:panelGroup rendered="#{customField.name == 'Size'}">
+                                        <p:selectOneMenu value="#{customField.value}">
+                                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                                            <f:selectItems value="#{productPageBean.sizeSelectItemList}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{customField.name == 'Color'}">
+                                        <p:selectOneMenu value="#{customField.value}">
+                                            <f:selectItem itemLabel="Select One" itemValue=""/>
+                                            <f:selectItems value="#{productPageBean.colorSelectItemList}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGroup>
                                 </div>
                             </ui:repeat>
                         </p>

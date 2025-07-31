@@ -21,7 +21,6 @@ public class Customization {
     private Order order;
 
     @NotNull
-    @Column(unique = true)
     private String fieldName;
 
     private String fieldValue;
