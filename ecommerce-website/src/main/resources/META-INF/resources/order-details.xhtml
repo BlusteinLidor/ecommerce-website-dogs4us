@@ -21,12 +21,15 @@
             <h:graphicImage value="#{item.product.imageURL}" width="100" class="mr-3"/>
             <div>
                 <p><strong>Name:</strong> #{item.product.name}</p>
+                <p><strong>Customization: </strong> #{item.cartItem.customizationReference}</p>
                 <p><strong>Price:</strong> $#{item.product.price}</p>
                 <p><strong>Quantity:</strong> #{item.quantity}</p>
-                <p><strong>Total:</strong></p>
+                <p><strong>Total: </strong>
                     <h:outputText value="#{item.product.price * item.quantity}">
                         <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2"/>
                     </h:outputText>
+                </p>
+
             </div>
         </div>
     </ui:repeat>

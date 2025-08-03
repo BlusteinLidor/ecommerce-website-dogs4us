@@ -64,6 +64,8 @@ public class ProductService {
                         "Category not found with name: "
                                 + productRequestDTO.getCategory()));
 
+
+
         product.setName(productRequestDTO.getName());
         product.setDescription(productRequestDTO.getDescription());
         product.setImageURL(productRequestDTO.getImageURL());

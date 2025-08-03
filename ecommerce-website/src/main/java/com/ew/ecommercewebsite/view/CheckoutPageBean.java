@@ -115,7 +115,7 @@ public class CheckoutPageBean implements Serializable {
                     customization.setFieldValue("-");
                 }
                 else{
-                    customization.setFieldValue(customField.getValue());   
+                    customization.setFieldValue(customField.getValue());
                 }
                 restTemplate.postForObject("http://localhost:4000/customizations", customization, CustomizationResponseDTO.class);
             }
@@ -139,7 +139,15 @@ public class CheckoutPageBean implements Serializable {
             product.setImageURL(productResponseDTO.getImageURL());
             product.setCategory(productResponseDTO.getCategory());
 
-            restTemplate.put("http://localhost:4000/products/" + productId, product);
+            try{
+                restTemplate.put("http://localhost:4000/products/" + productId, product);
+            } catch (Exception e){
+                e.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error placing order", null));
+                cartPageBean.setCartItemCount(cartItems.size());
+                return;
+            }
 
         }
 
