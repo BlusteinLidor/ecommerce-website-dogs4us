@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+<f:metadata>
+    <f:event type="preRenderView" listener="#{orderManagementBean.redirectIfNotAdmin}" />
+</f:metadata>
+<h:head>
+    <title>Order Management - Dogs4Us</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:outputStylesheet library="assets" name="css/layout.css"/>
+</h:head>
+
+<h:body styleClass="layout-wrapper bg-gray-50">
+
+    <!-- 🔵 Top Navigation Bar -->
+    <ui:include src="navbar.xhtml"/>
+
+        <div class="p-4 md:p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">📦 All Orders</h2>
+
+            <ui:repeat value="#{orderManagementBean.orders}" var="order">
+                <div class="border-round shadow-2 mb-4 p-4 bg-white">
+                    <div class="flex justify-content-between align-items-center mb-2">
+                        <div class="font-bold text-lg text-blue-900">
+                            <h:link outcome="order-details">
+                                <f:param name="id" value="#{order.id}" />
+                                <p>Order #: #{orderManagementBean.getOrderDisplayId(order.id)}</p>
+                            </h:link>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            #{order.orderDate}
+                        </div>
+                    </div>
+
+                    <div class="text-sm text-gray-700 mb-2">
+                        👤 <b>User:</b> #{order.user} <br/>
+                        💰 <b>Total: </b>
+                        <h:outputText value="#{order.totalAmount + 0}">
+                            <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2"/>
+                        </h:outputText>
+                    </div>
+
+                    <h:link outcome="/order-details.xhtml"
+                            styleClass="p-button p-button-sm p-button-info text-white">
+                        <f:param name="id" value="#{order.id}" />
+                        View Details
+                    </h:link>
+                </div>
+            </ui:repeat>
+        </div>
+
+    <!-- 📦 Footer -->
+    <ui:include src="footer.xhtml"/>
+
+</h:body>
+</html>

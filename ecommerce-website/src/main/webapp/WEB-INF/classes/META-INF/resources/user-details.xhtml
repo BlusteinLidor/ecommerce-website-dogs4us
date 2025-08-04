@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<f:metadata>
+    <f:event type="preRenderView" listener="#{userDetailsPageBean.redirectIfNotLoggedIn}" />
+</f:metadata>
+
+<h:head>
+    <title>User Details - Dogs4Us</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:outputStylesheet library="assets" name="css/layout.css"/>
+</h:head>
+
+<h:body styleClass="layout-wrapper bg-gray-50">
+
+    <ui:include src="navbar.xhtml" />
+
+    <div class="flex justify-content-center mt-6">
+        <div class="shadow-2 border-round p-5 bg-white w-full sm:w-30rem">
+            <h2 class="text-2xl mb-4 font-bold text-center text-blue-600">User Details</h2>
+
+            <p><strong>Name:</strong> #{userDetailsPageBean.user.name}</p>
+            <p><strong>Email:</strong> #{userDetailsPageBean.user.email}</p>
+
+            <h3 class="mt-4 mb-2 font-bold text-lg">Past Orders</h3>
+            <ui:repeat value="#{userDetailsPageBean.orders}" var="order">
+                <div class="border-bottom-1 py-2">
+                    <h:link outcome="order-details">
+                        <f:param name="id" value="#{order.id}" />
+                        <p>Order #: #{userDetailsPageBean.getOrderDisplayId(order.id)}</p>
+                    </h:link>
+                    <p>Date: #{order.orderDate}</p>
+                    <h:outputText value="Total: "/>
+                    <h:outputText value="#{order.totalAmount + 0}">
+                        <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2" />
+                    </h:outputText>
+<!--                    <p>Total: $#{order.totalAmount}</p>-->
+                </div>
+            </ui:repeat>
+        </div>
+    </div>
+
+    <!-- 📦 Footer -->
+    <ui:include src="footer.xhtml"/>
+
+</h:body>
+</html>

@@ -89,6 +89,12 @@ public class CheckoutPageBean implements Serializable {
             String quantity = item.getCartItem().getQuantity();
             String unitPrice = item.getProduct().getPrice();
             String customizationRef = item.getCartItem().getCustomizationPreview();
+
+            if(customizationRef == null || customizationRef.isBlank()){
+                customizationRef = "None";
+            }
+            customizationRef = customizationRef.replaceAll("\\[", "").replaceAll("\\]","");
+
             OrderItemRequestDTO orderItem = new OrderItemRequestDTO();
             orderItem.setOrderId(orderId);
             orderItem.setProductId(productId);

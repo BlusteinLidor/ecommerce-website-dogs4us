@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Cart - Dogs4Us</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:outputStylesheet library="assets" name="css/layout.css"/>
+</h:head>
+
+<h:body styleClass="layout-wrapper bg-gray-50">
+
+
+    <!-- 🔵 Top Navigation Bar -->
+    <ui:include src="navbar.xhtml"/>
+
+
+    <h:body>
+        <!-- Cart Items -->
+        <ui:repeat value="#{cartPageBean.cartItems}" var="item">
+            <h:form>
+                <div class="flex border-round shadow-2 m-2 p-3 align-items-center w-full justify-content-between">
+                    <div class="flex align-items-center">
+                        <img src="#{item.product.imageURL}" alt="Product Image" width="100" class="mr-3" />
+                        <div>
+                            <h:outputText value="#{item.product.name}" styleClass="font-bold text-xl" /><br/>
+                            <h:outputText value="Price: $#{item.product.price}" /><br/>
+                            <h:outputText value="Preview: #{item.cartItem.customizationPreview}" /><br/>
+                            <h:outputText value="Total: " />
+                            <h:outputText value="#{item.product.price * item.cartItem.quantity}" styleClass="font-bold">
+                                <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2" />
+                            </h:outputText>
+                        </div>
+                    </div>
+
+                    <!-- 🔢 Quantity Controls -->
+                        <div class="flex flex-column align-items-center">
+                            <div class="flex gap-2 align-items-center mb-2">
+                                <h:panelGroup rendered="#{item.product.stockQuantity != 0}">
+                                    <h:commandButton value="−"
+                                                    action="#{cartPageBean.decrementQuantity(item.cartItem)}"
+                                                    styleClass="p-button p-button-rounded p-button-secondary" />
+                                    <span class="text-lg font-bold">#{item.cartItem.quantity}</span>
+                                    <h:commandButton value="+"
+                                                    action="#{cartPageBean.incrementQuantity(item.cartItem)}"
+                                                    styleClass="p-button p-button-rounded p-button-secondary" />
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{item.product.stockQuantity == 0}">
+                                    <p><strong>Out of stock</strong></p>
+                                </h:panelGroup>
+                            </div>
+
+                            <!-- ❌ Remove Button -->
+                            <h:commandButton value="Remove"
+                                             action="#{cartPageBean.removeItem(item.cartItem)}"
+                                             styleClass="p-button p-button-danger p-button-sm" />
+                        </div>
+
+                </div>
+            </h:form>
+        </ui:repeat>
+
+        <!-- 🧾 Cart Total and Checkout Button -->
+        <div class="flex justify-content-between align-items-center m-4 p-3 border-top-1 surface-border">
+            <div>
+                <h:outputText value="Total Cart Price: " styleClass="text-xl font-bold" />
+                <h:outputText value="#{cartPageBean.totalCartPrice}" styleClass="text-xl font-bold">
+                    <f:convertNumber type="currency" currencySymbol="$" maxFractionDigits="2" minFractionDigits="2" />
+                </h:outputText>
+            </div>
+
+            <h:form>
+                <h:commandButton value="Proceed to Checkout"
+                                 action="/checkout.xhtml?faces-redirect=true"
+                                 rendered="#{not cartPageBean.cartEmpty and not cartPageBean.itemOutOfStock}"
+                                 styleClass="ml-auto p-button p-button-success text-white bg-orange-900 text-lg p-3 border-round" />
+                <h:commandButton value="Cart is empty"
+                                 disabled="true"
+                                 rendered="#{cartPageBean.cartEmpty}"
+                                 styleClass="ml-auto p-button p-button-success text-white bg-gray-500 text-lg p-3 border-round" />
+                <h:commandButton value="One or more items are out of stock"
+                                 disabled="true"
+                                 rendered="#{cartPageBean.itemOutOfStock and not cartPageBean.cartEmpty}"
+                                 styleClass="ml-auto p-button p-button-success text-white bg-gray-500 text-lg p-3 border-round" />
+            </h:form>
+        </div>
+        <div class="flex justify-content-end flex-wrap">
+            <!-- 📝 Messages -->
+            <h:messages globalOnly="true" styleClass="text-green-700 text-sm font-bold mt-2" />
+        </div>
+    </h:body>
+
+
+    <!-- 📦 Footer -->
+    <ui:include src="footer.xhtml"/>
+
+</h:body>
+</html>

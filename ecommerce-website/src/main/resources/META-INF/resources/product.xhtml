@@ -54,6 +54,20 @@
                                             <f:selectItems value="#{productPageBean.colorSelectItemList}"/>
                                         </p:selectOneMenu>
                                     </h:panelGroup>
+                                    <h:panelGroup rendered="#{customField.name == 'Image'}">
+                                        <h:form enctype="multipart/form-data">
+                                            <p:fileUpload
+                                                    value="#{imageUploadBean.file}"
+                                                    mode="advanced"
+                                                    label="Upload Image"
+                                                    listener="#{imageUploadBean.handleFileUpload}"
+                                                    auto="false"
+                                                    allowTypes="/(\.|\/)(png|jpg|jpeg|gif)$/"
+                                                    update="messages" />
+                                            <p:growl id="messages" showDetail="true" />
+                                        </h:form>
+
+                                    </h:panelGroup>
                                 </div>
                             </ui:repeat>
                         </p>

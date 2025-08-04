@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS customization
     id          UUID PRIMARY KEY,
     product_id  UUID         NOT NULL,
     order_id    UUID         NOT NULL,
-    field_name  VARCHAR(255) NOT NULL UNIQUE,
+    field_name  VARCHAR(255) NOT NULL,
     field_value VARCHAR(255),
     FOREIGN KEY (product_id) REFERENCES product (id),
     FOREIGN KEY (order_id) REFERENCES orders (order_id)

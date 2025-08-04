@@ -58,16 +58,16 @@ public class AuthController {
         return ResponseEntity.ok().header("Cache-Control", "no-store, no-cache, must-revalidate").build();
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity<Void> validateToken(@RequestHeader("Authorization") String authHeader){
-
-        // Authorization: Bearer <token>
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        return authService.validateToken(authHeader.substring(AUTH_HEADER_TOKEN_INDEX))
-                ? ResponseEntity.ok().build()
-                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
+//    @GetMapping("/validate")
+//    public ResponseEntity<Void> validateToken(@RequestHeader("Authorization") String authHeader){
+//
+//        // Authorization: Bearer <token>
+//        if(authHeader == null || !authHeader.startsWith("Bearer ")){
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//
+//        return authService.validateToken(authHeader.substring(AUTH_HEADER_TOKEN_INDEX))
+//                ? ResponseEntity.ok().build()
+//                : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//    }
 }

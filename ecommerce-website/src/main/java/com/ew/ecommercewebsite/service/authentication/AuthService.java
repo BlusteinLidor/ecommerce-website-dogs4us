@@ -9,7 +9,7 @@ import com.ew.ecommercewebsite.dto.entity.UserResponseDTO;
 import com.ew.ecommercewebsite.model.User;
 import com.ew.ecommercewebsite.repository.UserRepository;
 import com.ew.ecommercewebsite.service.entity.UserService;
-import com.ew.ecommercewebsite.utils.JwtUtil;
+//import com.ew.ecommercewebsite.utils.JwtUtil;
 import io.jsonwebtoken.JwtException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,14 +21,14 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+//    private final JwtUtil jwtUtil;
     private final UserService userService;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder
-            , JwtUtil jwtUtil, UserService userService) {
+            , UserService userService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
+//        this.jwtUtil = jwtUtil;
         this.userService = userService;
     }
 
@@ -47,13 +47,13 @@ public class AuthService {
         return userService.createUser(userRequestDTO);
     }
 
-    public boolean validateToken(String token){
-        try{
-            jwtUtil.validateToken(token);
-            return true;
-        }
-        catch (JwtException e){
-            return false;
-        }
-    }
+//    public boolean validateToken(String token){
+//        try{
+//            jwtUtil.validateToken(token);
+//            return true;
+//        }
+//        catch (JwtException e){
+//            return false;
+//        }
+//    }
 }

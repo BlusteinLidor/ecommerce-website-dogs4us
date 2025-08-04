@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+<f:metadata>
+    <f:event type="preRenderView" listener="#{redirectBean.redirectOrderConfirmation}" />
+</f:metadata>
+<h:head>
+    <title>Order Confirmation - Dogs4Us</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:outputStylesheet library="assets" name="css/layout.css"/>
+</h:head>
+
+<h:body styleClass="layout-wrapper bg-gray-50">
+
+    <!-- 🔵 Top Navigation Bar -->
+    <ui:include src="navbar.xhtml"/>
+
+    <!-- 🎉 Order Confirmation Message -->
+    <div class="flex justify-content-center align-items-center min-h-screen">
+        <div class="p-5 bg-white shadow-2 border-round text-center w-full sm:w-30rem">
+            <h2 class="text-2xl font-bold text-green-600 mb-3">Thank you for your order!</h2>
+            <p class="text-md mb-4">Your order has been successfully placed. We’ll contact you shortly with delivery details.</p>
+
+            <h:link outcome="/products" value="Continue Shopping"
+                    styleClass="p-button p-button-primary w-full mt-2" />
+        </div>
+    </div>
+
+    <!-- 📦 Footer -->
+    <ui:include src="footer.xhtml"/>
+
+</h:body>
+</html>

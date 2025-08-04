@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Products - Dogs4Us</title>
+    <h:outputStylesheet library="webjars" name="primeflex/3.3.1/primeflex.min.css"/>
+    <h:outputStylesheet library="assets" name="css/layout.css"/>
+</h:head>
+
+<h:body styleClass="layout-wrapper bg-gray-50">
+
+    <!-- 🔵 Top Navigation Bar -->
+    <ui:include src="navbar.xhtml"/>
+
+    <!-- 🔍 Live Search Bar -->
+    <h:form id="searchForm" styleClass="flex justify-content-center align-items-center gap-2 my-4">
+        <p:inputText value="#{productsBean.searchQuery}"
+                     placeholder="Search products..."
+                     styleClass="p-inputtext p-component w-20rem">
+            <f:ajax event="keyup" listener="#{productsBean.filterProducts}" render="productList" />
+        </p:inputText>
+    </h:form>
+    <!-- Products -->
+    <div class="grid px-4">
+        <h:panelGroup id="productList">
+            <div class="grid px-4">
+                <ui:repeat value="#{productsBean.filteredProducts}" var="product">
+                    <div class="col-12 md:col-4 p-2">
+                        <div class="shadow-1 border-round p-3 bg-white">
+                            <h:link outcome="product" includeViewParams="true">
+                                <f:param name="id" value="#{product.id}" />
+                                <h:graphicImage value="#{product.imageURL}" alt="#{product.name}"
+                                                styleClass="w-full h-15rem border-round shadow-2"
+                                                style="object-fit: contain; background-color: white; padding: 1rem;" />
+                                <h4 class="mt-2 mb-1 text-lg font-bold">#{product.name}</h4>
+                                <p class="text-sm text-gray-600">#{product.description}</p>
+                            </h:link>
+                        </div>
+                    </div>
+                </ui:repeat>
+                <h:panelGroup rendered="#{empty(productsBean.filteredProducts)}">
+                    <div class="text-center text-gray-500 mt-4">No products found.</div>
+                </h:panelGroup>
+            </div>
+        </h:panelGroup>
+    </div>
+
+    <!-- 📦 Footer -->
+    <ui:include src="footer.xhtml"/>
+
+</h:body>
+</html>
