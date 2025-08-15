@@ -12,11 +12,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Bean class responsible for managing the home page data, specifically handling featured products.
+ * Uses RequestScope to create a new instance for each HTTP request.
+ */
 @Component
 @RequestScope
 public class HomeBean {
+    /**
+     * List of featured products to be displayed on the home page.
+     * Initialized as an empty ArrayList and populated with the first 3 products from the product list.
+     */
     private List<ProductResponseDTO> featuredProducts = new ArrayList<>();
 
+    /**
+     * Initializes the featured products list by fetching products from the REST API.
+     * Called automatically after bean construction.
+     * Retrieves all products and selects the first 3 as featured products.
+     */
     @PostConstruct
     public void init(){
         try{
@@ -31,6 +44,11 @@ public class HomeBean {
         }
     }
 
+    /**
+     * Returns the list of featured products.
+     *
+     * @return List of ProductResponseDTO objects representing the featured products
+     */
     public List<ProductResponseDTO> getFeaturedProducts(){
         return featuredProducts;
     }

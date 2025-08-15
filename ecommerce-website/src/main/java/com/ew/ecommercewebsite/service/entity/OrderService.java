@@ -19,13 +19,37 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service class responsible for handling business logic related to orders in the e-commerce system.
+ * Provides functionality for managing orders, including CRUD operations and user-specific order retrieval.
+ */
 @Service
 public class OrderService {
+    /**
+     * Repository for managing Order entities
+     */
     private final OrderRepository orderRepository;
+    /**
+     * Repository for managing User entities
+     */
     private final UserRepository userRepository;
+    /**
+     * Repository for managing OrderItem entities
+     */
     private final OrderItemRepository orderItemRepository;
+    /**
+     * Repository for managing Customization entities
+     */
     private final CustomizationRepository customizationRepository;
 
+    /**
+     * Constructs a new OrderService with required repositories.
+     *
+     * @param orderRepository         Repository for Order entities
+     * @param userRepository          Repository for User entities
+     * @param orderItemRepository     Repository for OrderItem entities
+     * @param customizationRepository Repository for Customization entities
+     */
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
                         OrderItemRepository orderItemRepository, CustomizationRepository customizationRepository) {
         this.orderRepository = orderRepository;
@@ -34,6 +58,11 @@ public class OrderService {
         this.customizationRepository = customizationRepository;
     }
 
+    /**
+     * Retrieves all orders from the system.
+     *
+     * @return List of OrderResponseDTO containing all orders
+     */
     public List<OrderResponseDTO> getOrders(){
         List<Order> orders = orderRepository.findAll();
 
@@ -43,6 +72,13 @@ public class OrderService {
         return orderResponseDTOs;
     }
 
+    /**
+     * Creates a new order in the system.
+     *
+     * @param orderRequestDTO DTO containing the order details
+     * @return OrderResponseDTO containing the created order details
+     * @throws UserNotFoundException if the specified user does not exist
+     */
     public OrderResponseDTO createOrder(OrderRequestDTO orderRequestDTO){
         User user = userRepository.findById(UUID.fromString(orderRequestDTO.getUser()))
                 .orElseThrow(() -> new UserNotFoundException(
@@ -57,6 +93,15 @@ public class OrderService {
         return OrderMapper.toDTO(newOrder);
     }
 
+    /**
+     * Updates an existing order.
+     *
+     * @param id              ID of the order to update
+     * @param orderRequestDTO DTO containing updated order details
+     * @return OrderResponseDTO containing the updated order details
+     * @throws OrderNotFoundException if the order is not found
+     * @throws UserNotFoundException  if the specified user does not exist
+     */
     public OrderResponseDTO updateOrder(UUID id, OrderRequestDTO orderRequestDTO){
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new OrderNotFoundException("Order not found with ID: " + id));
@@ -76,6 +121,12 @@ public class OrderService {
         return OrderMapper.toDTO(updatedOrder);
     }
 
+    /**
+     * Deletes an order and its associated items and customizations.
+     *
+     * @param id ID of the order to delete
+     * @throws OrderNotFoundException if the order is not found
+     */
     @Transactional
     public void deleteOrder(UUID id){
         Order order = orderRepository.findById(id).orElseThrow(
@@ -86,6 +137,12 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
+    /**
+     * Retrieves all orders for a specific user.
+     *
+     * @param userId ID of the user whose orders to retrieve
+     * @return List of OrderResponseDTO containing user's orders
+     */
     public List<OrderResponseDTO> getOrdersByUserId(@PathVariable UUID userId){
         List<Order> orders = orderRepository.findAll();
 

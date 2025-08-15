@@ -20,26 +20,59 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Manages the checkout process for the e-commerce website.
+ * Handles order placement, user information, and cart management during checkout.
+ */
 @Named
 @ViewScoped
 public class CheckoutPageBean implements Serializable {
 
+    /**
+     * Reference to cart management bean
+     */
     private final CartPageBean cartPageBean;
+    /**
+     * User session information
+     */
     @Autowired
     private SessionUserBean sessionUserBean;
 
+    /**
+     * List of cart items with product details
+     */
     private List<CartItemWithProductResponseDTO> cartItems = new ArrayList<>();
+    /**
+     * REST client for API calls
+     */
     private RestTemplate restTemplate = new RestTemplate();
 
+    /**
+     * Customer's name for shipping
+     */
     private String name;
+    /**
+     * Delivery address
+     */
     private String address;
+    /**
+     * Contact phone number
+     */
     private String phone;
 
+    /**
+     * Constructs a new CheckoutPageBean with the specified cart bean.
+     * @param cartPageBean The cart management bean to be used
+     */
     @Inject
     public CheckoutPageBean(CartPageBean cartPageBean) {
         this.cartPageBean = cartPageBean;
     }
 
+    /**
+     * Initializes the checkout page by loading cart items and user information.
+     * Called after bean construction.
+     */
     @PostConstruct
     public void init() {
         if (sessionUserBean == null || sessionUserBean.getUser() == null) {
@@ -64,6 +97,10 @@ public class CheckoutPageBean implements Serializable {
         this.name = sessionUserBean.getUser().getName();
     }
 
+    /**
+     * Processes the order placement, creates order records, updates product stock,
+     * and handles customizations. Redirects to confirmation page on success.
+     */
     public void placeOrder() {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Order placed successfully!", null));
@@ -179,6 +216,10 @@ public class CheckoutPageBean implements Serializable {
 
     }
 
+    /**
+     * Checks if user is logged in and redirects to home page if not.
+     * @throws IOException if redirect fails
+     */
     public void redirectIfNotLoggedIn() throws IOException {
         if (sessionUserBean.getUser() == null) {
             FacesContext.getCurrentInstance().getExternalContext()
@@ -186,10 +227,18 @@ public class CheckoutPageBean implements Serializable {
         }
     }
 
+    /**
+     * Returns the list of cart items with their product details.
+     * @return List of cart items with product information
+     */
     public List<CartItemWithProductResponseDTO> getCartItems() {
         return cartItems;
     }
 
+    /**
+     * Calculates the total cost of all items in the cart.
+     * @return Total cost of the order
+     */
     public double getTotalCost() {
         return cartItems.stream()
                 .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
@@ -197,13 +246,44 @@ public class CheckoutPageBean implements Serializable {
     }
 
     // Getters and setters for name, address, phone
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    /**
+     * @return Customer's name
+     */
+    public String getName() {
+        return name;
+    }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    /**
+     * @param name Customer's name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public String getPhone() { return phone; }
+    /**
+     * @return Delivery address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address Delivery address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return Contact phone number
+     */
+    public String getPhone() {
+        return phone;
+    }
+
+    /**
+     * @param phone Contact phone number to set
+     */
     public void setPhone(String phone) { this.phone = phone; }
 }
 

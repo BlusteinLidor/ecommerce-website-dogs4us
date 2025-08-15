@@ -12,13 +12,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Bean class responsible for managing product-related operations in the view layer.
+ * Handles product listing and filtering functionality.
+ */
 @Component
 @RequestScope
 public class ProductsBean {
+    /**
+     * List containing all available products
+     */
     private List<ProductResponseDTO> products = new ArrayList<>();
+    /**
+     * Current search query string for filtering products
+     */
     private String searchQuery = "";
+    /**
+     * List of products filtered based on search query
+     */
     private List<ProductResponseDTO> filteredProducts;
 
+    /**
+     * Initializes the bean by fetching all products from the backend service.
+     * Called automatically after bean construction.
+     */
     @PostConstruct
     public void init(){
         try{
@@ -32,6 +49,10 @@ public class ProductsBean {
         }
     }
 
+    /**
+     * Filters the products list based on the current search query.
+     * Filters by product name and description, case-insensitive.
+     */
     public void filterProducts(){
         if (searchQuery == null || searchQuery.trim().isEmpty()) {
             filteredProducts = new ArrayList<>(products);
@@ -44,11 +65,33 @@ public class ProductsBean {
         }
     }
 
+    /**
+     * Returns the complete list of products.
+     *
+     * @return List of all products
+     */
     public List<ProductResponseDTO> getProducts(){
         return products;
     }
 
-    public String getSearchQuery() { return searchQuery; }
-    public void setSearchQuery(String searchQuery) { this.searchQuery = searchQuery; }
+    /**
+     * @return Current search query string
+     */
+    public String getSearchQuery() {
+        return searchQuery;
+    }
+
+    /**
+     * Sets the search query string for filtering products
+     *
+     * @param searchQuery The search term to filter by
+     */
+    public void setSearchQuery(String searchQuery) {
+        this.searchQuery = searchQuery;
+    }
+
+    /**
+     * @return List of filtered products based on search query
+     */
     public List<ProductResponseDTO> getFilteredProducts() { return filteredProducts; }
 }

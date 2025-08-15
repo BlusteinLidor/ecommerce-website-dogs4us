@@ -32,62 +32,132 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 
+/**
+ * Manages the product details page functionality, including product display and cart operations.
+ * Uses ViewScoped to maintain state during user interaction with a specific product.
+ */
 @Named
 //@RequestScoped
 @ViewScoped
 public class ProductPageBean implements Serializable {
+    /**
+     * The currently displayed product
+     */
     private ProductResponseDTO product;
+    /**
+     * User session information
+     */
     @Autowired
     private SessionUserBean sessionUserBean;
+    /**
+     * REST client for API calls
+     */
     private final RestTemplate restTemplate = new RestTemplate();
+    /**
+     * Repository for cart item operations
+     */
     private CartItemRepository cartItemRepository;
+    /**
+     * Bean for cart page operations
+     */
     private CartPageBean cartPageBean;
+    /**
+     * Selected quantity of the product
+     */
     private int quantity = 1;
+    /**
+     * Raw string of custom fields
+     */
     @Getter
     @Setter
     private String customFields;
+    /**
+     * List of customizable fields for the product
+     */
     @Getter
     @Setter
     private List<CustomField> customFieldItemList = new ArrayList<>();
+    /**
+     * Available color options
+     */
     @Getter
     @Setter
     private List<String> colorSelectItemList = new ArrayList<>();
+    /**
+     * Available size options
+     */
     @Getter
     @Setter
     private List<String> sizeSelectItemList = new ArrayList<>();
 
-    public ProductPageBean(){}
+    /**
+     * Default constructor
+     */
+    public ProductPageBean() {
+    }
 
+    /**
+     * Constructor with dependencies injection
+     *
+     * @param cartItemRepository Repository for cart operations
+     * @param cartPageBean       Bean for cart page functionality
+     */
     @Autowired
     public ProductPageBean(CartItemRepository cartItemRepository, CartPageBean cartPageBean){
         this.cartItemRepository = cartItemRepository;
         this.cartPageBean = cartPageBean;
     }
 
+    /**
+     * Gets the current product being displayed
+     *
+     * @return The product data transfer object
+     */
     public ProductResponseDTO getProduct() {
         return product;
     }
 
+    /**
+     * Gets the selected quantity
+     *
+     * @return Current quantity value
+     */
     public int getQuantity() {
         return quantity;
     }
 
+    /**
+     * Sets the product quantity
+     *
+     * @param quantity New quantity value
+     */
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
+    /**
+     * Increases the quantity by one if less than 99
+     */
     public void incrementQuantity(){
         if(this.quantity < 99){
             this.quantity++;
         }
     }
 
+    /**
+     * Decreases the quantity by one if greater than 1
+     */
     public void decrementQuantity(){
         if(this.quantity > 1){
             this.quantity--;
         }
     }
 
+    /**
+     * Initializes the bean by loading product details and customization options
+     *
+     * @throws IOException If there's an error reading the product data
+     */
     @PostConstruct
     public void init() throws IOException{
         String productIdContext = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id");
@@ -110,6 +180,10 @@ public class ProductPageBean implements Serializable {
         }
     }
 
+    /**
+     * Adds the current product to the shopping cart with selected quantity and customizations
+     * Shows success message on completion or warning if product is out of stock
+     */
     public void addToCart(){
         UUID userId = sessionUserBean.getUser().getId();
         UUID productId = UUID.fromString(product.getId());
@@ -163,6 +237,10 @@ public class ProductPageBean implements Serializable {
         }
     }
 
+    /**
+     * Processes the product's customizable fields and populates the customization lists
+     * Converts the raw customization string into a list of CustomField objects
+     */
     public void getProductCustomizations(){
         customFields = product.getCustomizableFields();
         if(customFields == null || customFields.isBlank()){

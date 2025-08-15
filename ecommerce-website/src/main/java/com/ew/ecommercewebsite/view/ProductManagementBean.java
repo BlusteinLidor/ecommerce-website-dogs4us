@@ -21,35 +21,68 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Managed bean responsible for handling product management operations in the admin interface.
+ * This bean provides functionality for CRUD operations on products.
+ */
 @Named
 @ViewScoped
 public class ProductManagementBean implements Serializable {
 
+    /**
+     * Current product being created or edited
+     */
     @Setter
     @Getter
     private ProductRequestDTO product;
+    /**
+     * REST client for making HTTP requests
+     */
     private final RestTemplate restTemplate = new RestTemplate();
+    /**
+     * Comma-separated string of customizable fields
+     */
     @Setter
     @Getter
     private String customizableFieldsString;
+    /**
+     * List of all products in the system
+     */
     @Setter
     @Getter
     private List<ProductResponseDTO> products;
+    /**
+     * Current user session information
+     */
     @Inject
     private SessionUserBean sessionUserBean;
+    /**
+     * Flag indicating if the form is in edit mode
+     */
     @Setter
     @Getter
     private boolean isEditMode = false;
+    /**
+     * ID of the product being edited
+     */
     @Setter
     @Getter
     private String selectedProductId;
 
+    /**
+     * Initializes the bean by creating a new product instance and fetching existing products.
+     * Called after bean construction.
+     */
     @PostConstruct
     public void init() {
         product = new ProductRequestDTO();
         fetchProducts();
     }
 
+    /**
+     * Retrieves all products from the backend service.
+     * Updates the products list with the fetched data.
+     */
     public void fetchProducts() {
         String url = "http://localhost:4000/products";
         products = Arrays.asList(restTemplate.getForObject(url, ProductResponseDTO[].class));
@@ -59,6 +92,10 @@ public class ProductManagementBean implements Serializable {
         System.out.println("Products fetched: " + products.size());
     }
 
+    /**
+     * Saves a new product to the system.
+     * Processes customizable fields and sends the product data to the backend.
+     */
     public void saveProduct() {
         try {
             String[] tempArr = customizableFieldsString.split(",");
@@ -83,6 +120,11 @@ public class ProductManagementBean implements Serializable {
         }
     }
 
+    /**
+     * Prepares the form for editing an existing product.
+     *
+     * @param prod The product to be edited
+     */
     public void editProduct(ProductResponseDTO prod) {
         isEditMode = true;
         selectedProductId = prod.getId();
@@ -111,6 +153,10 @@ public class ProductManagementBean implements Serializable {
         product.setStockQuantity(prod.getStockQuantity());
     }
 
+    /**
+     * Updates an existing product in the system.
+     * Sends the modified product data to the backend.
+     */
     public void updateProduct() {
         try{
             restTemplate.put("http://localhost:4000/products/" + selectedProductId, product);
@@ -125,6 +171,11 @@ public class ProductManagementBean implements Serializable {
         }
     }
 
+    /**
+     * Deletes a product from the system.
+     *
+     * @param id The ID of the product to be deleted
+     */
     public void deleteProduct(String id) {
         restTemplate.delete("http://localhost:4000/products/" + id);
         fetchProducts();
@@ -132,12 +183,20 @@ public class ProductManagementBean implements Serializable {
                 new FacesMessage(FacesMessage.SEVERITY_INFO, "Product deleted successfully!", null));
     }
 
+    /**
+     * Cancels the edit mode and resets the form.
+     */
     public void cancelEditMode() {
         isEditMode = false;
         selectedProductId = null;
         product = new ProductRequestDTO();
     }
 
+    /**
+     * Redirects to home page if the current user is not an admin.
+     *
+     * @throws IOException if redirect fails
+     */
     public void redirectIfNotAdmin() throws IOException {
         if (sessionUserBean.getUser() == null || !sessionUserBean.getUser().getIsAdmin()) {
             FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");

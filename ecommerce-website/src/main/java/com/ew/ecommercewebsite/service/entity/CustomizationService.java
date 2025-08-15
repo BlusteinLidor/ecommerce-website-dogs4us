@@ -17,12 +17,32 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Service class responsible for managing product customization operations.
+ * Handles CRUD operations for customizations and their relationships with products and orders.
+ */
 @Service
 public class CustomizationService {
+    /**
+     * Repository for managing customization entities
+     */
     private final CustomizationRepository customizationRepository;
+    /**
+     * Repository for managing product entities
+     */
     private final ProductRepository productRepository;
+    /**
+     * Repository for managing order entities
+     */
     private final OrderRepository orderRepository;
 
+    /**
+     * Constructs a new CustomizationService with required repositories.
+     *
+     * @param customizationRepository Repository for customization operations
+     * @param productRepository       Repository for product operations
+     * @param orderRepository         Repository for order operations
+     */
     public CustomizationService(CustomizationRepository customizationRepository,
                                 ProductRepository productRepository, OrderRepository orderRepository) {
         this.customizationRepository = customizationRepository;
@@ -30,6 +50,11 @@ public class CustomizationService {
         this.orderRepository = orderRepository;
     }
 
+    /**
+     * Retrieves all customizations from the database.
+     *
+     * @return List of CustomizationResponseDTO containing all customizations
+     */
     public List<CustomizationResponseDTO> getCustomizations(){
         List<Customization> customizations = customizationRepository.findAll();
 
@@ -39,6 +64,13 @@ public class CustomizationService {
         return customizationResponseDTOs;
     }
 
+    /**
+     * Creates a new customization based on the provided request data.
+     *
+     * @param customizationRequestDTO The customization data to create
+     * @return CustomizationResponseDTO containing the created customization
+     * @throws ProductNotFoundException if the specified product is not found
+     */
     public CustomizationResponseDTO createCustomization(CustomizationRequestDTO customizationRequestDTO){
         Product product = productRepository.findById(UUID.fromString(customizationRequestDTO.getProduct()))
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with ID: "
@@ -56,6 +88,14 @@ public class CustomizationService {
         return CustomizationMapper.toDTO(newCustomization);
     }
 
+    /**
+     * Updates an existing customization with new data.
+     *
+     * @param id                      The UUID of the customization to update
+     * @param customizationRequestDTO The new customization data
+     * @return CustomizationResponseDTO containing the updated customization
+     * @throws CustomizationNotFoundException if the customization is not found
+     */
     public CustomizationResponseDTO updateCustomization(UUID id, CustomizationRequestDTO customizationRequestDTO){
         Customization customization = customizationRepository.findById(id).orElseThrow(
                 () -> new CustomizationNotFoundException("Customization not found with ID: " + id));
@@ -78,6 +118,12 @@ public class CustomizationService {
         return CustomizationMapper.toDTO(updatedCustomization);
     }
 
+    /**
+     * Deletes a customization by its ID.
+     *
+     * @param id The UUID of the customization to delete
+     * @throws CustomizationNotFoundException if the customization is not found
+     */
     @Transactional
     public void deleteCustomization(UUID id){
         Customization customization = customizationRepository.findById(id).orElseThrow(

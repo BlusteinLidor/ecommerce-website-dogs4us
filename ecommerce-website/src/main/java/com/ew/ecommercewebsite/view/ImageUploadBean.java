@@ -13,17 +13,34 @@ import org.primefaces.model.file.UploadedFile;
 import java.io.*;
 import java.util.List;
 
+/**
+ * Bean class responsible for handling image upload operations in the application.
+ * This class manages the file upload process and stores images in a designated directory.
+ */
 @Named
 @ViewScoped
 public class ImageUploadBean implements Serializable {
 
+    /**
+     * The uploaded file instance from the user's request.
+     */
     @Setter
     @Getter
     private UploadedFile file;
 
+    /**
+     * Reference to the ProductPageBean for updating product image information.
+     */
     @Inject
     private ProductPageBean productPageBean;
 
+    /**
+     * Handles the file upload event, processes the uploaded image, and saves it to the designated directory.
+     * The method generates a unique filename and updates the product's image path in the ProductPageBean.
+     *
+     * @param event The FileUploadEvent containing the uploaded file information
+     * @throws RuntimeException if there are IO errors during file saving
+     */
     public void handleFileUpload(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         if (file == null || file.getFileName() == null) {
@@ -79,6 +96,13 @@ public class ImageUploadBean implements Serializable {
         productPageBean.setCustomFieldItemList(customFieldItemList);
     }
 
+    /**
+     * Determines the next available index for naming product images.
+     * Scans the upload directory for existing product images and returns the next available number.
+     *
+     * @param uploadDir The directory containing product images
+     * @return The next available index for naming product images
+     */
     private int getNextImageIndex(File uploadDir) {
         int maxIndex = 0;
 
