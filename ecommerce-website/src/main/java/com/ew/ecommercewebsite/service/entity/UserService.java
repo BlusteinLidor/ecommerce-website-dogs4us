@@ -69,11 +69,11 @@ public class UserService {
      * @throws EmailAlreadyExistsException if email is already registered
      */
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+        /* Check that there is no user with the same email already */
         if (userRepository.existsByEmail(userRequestDTO.getEmail())) {
             throw new EmailAlreadyExistsException("A user with this email already exists "
                     + userRequestDTO.getEmail());
         }
-
         User user = UserMapper.toModel(userRequestDTO);
         user.setPasswordHash(passwordEncoder
                 .encode(userRequestDTO.getPassword()));

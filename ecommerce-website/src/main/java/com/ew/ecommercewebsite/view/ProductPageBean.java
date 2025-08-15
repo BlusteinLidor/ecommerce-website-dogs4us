@@ -154,9 +154,13 @@ public class ProductPageBean implements Serializable {
     }
 
     /**
-     * Initializes the bean by loading product details and customization options
+     * Initializes the ProductPageBean after construction. This method:
+     * - Retrieves the product ID from request parameters
+     * - Loads product details from the backend API
+     * - Initializes product customization options including sizes and colors
+     * - Redirects to home page if no valid product ID is provided
      *
-     * @throws IOException If there's an error reading the product data
+     * @throws IOException If there's an error connecting to the backend API or reading the product data
      */
     @PostConstruct
     public void init() throws IOException{
@@ -181,45 +185,53 @@ public class ProductPageBean implements Serializable {
     }
 
     /**
-     * Adds the current product to the shopping cart with selected quantity and customizations
-     * Shows success message on completion or warning if product is out of stock
+     * Adds the current product to the shopping cart with selected quantity and customizations.
+     * This method:
+     * - Extracts user and product IDs
+     * - Creates a cart item DTO with customization details
+     * - Updates quantity if item exists in cart
+     * - Creates new cart item if it doesn't exist
+     * - Handles out of stock and other errors
      */
-    public void addToCart(){
+    public void addToCart() {
+        // Extract user and product IDs for cart operations
         UUID userId = sessionUserBean.getUser().getId();
         UUID productId = UUID.fromString(product.getId());
 
+        // Create cart item DTO and build customization preview
         CartItemRequestDTO dto = new CartItemRequestDTO();
         dto.setUserId(userId.toString());
         dto.setProductId(productId.toString());
         StringBuilder previewBuilder = new StringBuilder();
         for (CustomField field : customFieldItemList) {
-            if(field.getValue() == null || field.getValue().isEmpty()){
+            if (field.getValue() == null || field.getValue().isEmpty()) {
                 field.setValue("-");
             }
             previewBuilder.append(field.getName()).append(": ").append(field.getValue()).append("; ");
         }
         dto.setCustomizationPreview(previewBuilder.toString().trim());
         CartItemId cartItemId = new CartItemId(userId, productId);
-        if(cartItemRepository.existsById(cartItemId)){
-            try{
+        if (cartItemRepository.existsById(cartItemId)) {
+            try {
+                // Update existing cart item quantity
                 int previousQuantity = cartItemRepository.findById(cartItemId).orElseThrow().getQuantity();
                 int newQuantity = previousQuantity + quantity;
                 dto.setQuantity(String.valueOf(newQuantity));
                 restTemplate.put("http://localhost:4000/cart-items/userId/"
-                        + userId.toString() + "/productId/" + productId.toString() , dto);
+                        + userId.toString() + "/productId/" + productId.toString(), dto);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));
-            }
-            catch (HttpClientErrorException e){
+            } catch (HttpClientErrorException e) {
+                // Handle out of stock error
                 FacesContext context = FacesContext.getCurrentInstance();
                 context.getExternalContext().getFlash().setKeepMessages(true);
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Not enough in stock", null));
-            } catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        else{
-            try{
+        } else {
+            try {
+                // Create new cart item
                 dto.setQuantity(Integer.toString(quantity));
                 restTemplate.postForObject("http://localhost:4000/cart-items", dto, Void.class);
 
@@ -227,7 +239,8 @@ public class ProductPageBean implements Serializable {
 
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Added to cart!", null));
-            } catch (HttpClientErrorException e){
+            } catch (HttpClientErrorException e) {
+                // Handle out of stock error
                 FacesContext context = FacesContext.getCurrentInstance();
                 context.getExternalContext().getFlash().setKeepMessages(true);
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Not enough in stock", null));

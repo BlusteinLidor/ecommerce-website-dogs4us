@@ -88,46 +88,50 @@ public class CartPageBean implements Serializable {
      * Updates cart item count and total price.
      */
     public void fetchCart() {
+        // Initialize cart state
         cartItems = new ArrayList<>();
         isItemOutOfStock = false;
-        try{
+        try {
+            // Get current user's cart items from the backend
             UUID userId = sessionUserBean.getUser().getId();
             String url = "http://localhost:4000/cart-items/userId/" + userId;
 
             CartItemResponseDTO[] items = restTemplate.getForObject(url, CartItemResponseDTO[].class);
 
+            // For each cart item, fetch its associated product details
             for (CartItemResponseDTO item : items) {
                 String productUrl = "http://localhost:4000/products/" + item.getProductId();
                 ProductResponseDTO product = restTemplate.getForObject(productUrl, ProductResponseDTO.class);
 
-                if(Integer.parseInt(product.getStockQuantity()) == 0){
+                // Check if any product in cart is out of stock
+                if (Integer.parseInt(product.getStockQuantity()) == 0) {
                     isItemOutOfStock = true;
                 }
 
-
+                // Combine cart item and product information
                 CartItemWithProductResponseDTO fullItem = new CartItemWithProductResponseDTO();
                 fullItem.setCartItem(item);
                 fullItem.setProduct(product);
                 cartItems.add(fullItem);
             }
-        }
-        catch (HttpClientErrorException e) {
-            // If 400 BAD_REQUEST means "no cart items", treat as empty cart
+        } catch (HttpClientErrorException e) {
+            // Handle case where user has no items in cart (400 BAD_REQUEST)
             if (e.getStatusCode().value() == 400) {
                 cartItems = new ArrayList<>();
             } else {
                 e.printStackTrace(); // Or use logging
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
+            // Handle general errors during cart fetch
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error fetching cart items", null));
             e.printStackTrace();
         }
 
-
+        // Update cart summary information
         cartItemCount = cartItems.size();
 
+        // Calculate total price of all items in cart
         totalCartPrice = cartItems.stream()
                 .mapToDouble(item -> Double.parseDouble(item.getProduct().getPrice()) * Integer.parseInt(item.getCartItem().getQuantity()))
                 .sum();

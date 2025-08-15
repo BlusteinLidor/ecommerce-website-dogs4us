@@ -61,12 +61,11 @@
                                                     mode="advanced"
                                                     label="Upload Image"
                                                     listener="#{imageUploadBean.handleFileUpload}"
-                                                    auto="false"
+                                                    auto="true"
                                                     allowTypes="/(\.|\/)(png|jpg|jpeg|gif)$/"
                                                     update="messages" />
                                             <p:growl id="messages" showDetail="true" />
                                         </h:form>
-
                                     </h:panelGroup>
                                 </div>
                             </ui:repeat>

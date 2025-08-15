@@ -126,13 +126,18 @@ public class ProductManagementBean implements Serializable {
      * @param prod The product to be edited
      */
     public void editProduct(ProductResponseDTO prod) {
+        // Set edit mode and store selected product ID
         isEditMode = true;
         selectedProductId = prod.getId();
+
+        // Copy all basic product properties from the input parameter
         product.setName(prod.getName());
         product.setDescription(prod.getDescription());
         product.setPrice(prod.getPrice());
         product.setCategory(prod.getCategory());
         product.setImageURL(prod.getImageURL());
+
+        // Process customizable fields if they exist
         List<String> customizableList = new ArrayList<>();
         if (prod.getCustomizableFields() != null || !prod.getCustomizableFields().isEmpty()) {
             if(customizableFieldsString != null && customizableFieldsString.contains(",")){

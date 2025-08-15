@@ -55,19 +55,22 @@ public class UserDetailsPageBean implements Serializable {
      */
     @PostConstruct
     public void init() {
+        // check that the user is connected
         if(sessionUserBean.getUser() != null){
             UUID userId = sessionUserBean.getUser().getId();
             String url = "http://localhost:4000/orders/userId/" + userId;
             try {
+                // Get the orders of the user
                 OrderResponseDTO[] response = restTemplate.getForObject(url, OrderResponseDTO[].class);
                 if (response != null) {
+                    // Store orders from response array into orders list and create display IDs
                     orders = Arrays.asList(response);
                     for(int i = 0; i < orders.size(); i++){
                         orderDisplayIds.put(orders.get(i).getId(), String.format("ORD-%05d", i + 1));
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace(); // Optional: show a FacesMessage
+                e.printStackTrace();
             }
         }
     }

@@ -40,6 +40,7 @@ public class ProductsBean {
     public void init(){
         try{
             RestTemplate restTemplate = new RestTemplate();
+            /** Backend API endpoint URL for retrieving all products */
             String url = "http://localhost:4000/products";
             ResponseEntity<ProductResponseDTO[]> response = restTemplate.getForEntity(url, ProductResponseDTO[].class);
             products = Arrays.asList(response.getBody());
@@ -52,6 +53,9 @@ public class ProductsBean {
     /**
      * Filters the products list based on the current search query.
      * Filters by product name and description, case-insensitive.
+     * If the search query is empty or null, returns all products.
+     * Otherwise, filters products where name or description contains the search term.
+     * Results are stored in the filteredProducts list.
      */
     public void filterProducts(){
         if (searchQuery == null || searchQuery.trim().isEmpty()) {

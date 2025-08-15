@@ -109,7 +109,7 @@ public class CheckoutPageBean implements Serializable {
 
         UUID userId = sessionUserBean.getUser().getId();
 
-        //        Create Order Entity
+        // Create new order record in the database with user ID, date and total amount
         String createOrderUrl = "http://localhost:4000/orders";
         OrderRequestDTO order = new OrderRequestDTO();
         order.setUser(userId.toString());
@@ -119,7 +119,7 @@ public class CheckoutPageBean implements Serializable {
         OrderResponseDTO orderResponse = response.getBody();
         String orderId = orderResponse.getId();
 
-//        Create Order Items
+        // Create order items and their customizations, storing details like quantity, price and custom fields
         String createOrderItemUrl = "http://localhost:4000/order-items";
         for(CartItemWithProductResponseDTO item : cartItems){
             String productId = item.getCartItem().getProductId();
@@ -140,7 +140,7 @@ public class CheckoutPageBean implements Serializable {
             orderItem.setCustomizationReference(customizationRef);
             restTemplate.postForObject(createOrderItemUrl, orderItem, OrderItemResponseDTO.class);
 
-//            Name: Billie; Phone: 050-6075637;
+//          Example structure:  Name: Billie; Phone: 050-6075637;
             List<CustomField> customFields = new ArrayList<>();
             String[] customSplitList = customizationRef.split(";");
             for(String customField : customSplitList){
@@ -163,7 +163,7 @@ public class CheckoutPageBean implements Serializable {
                 restTemplate.postForObject("http://localhost:4000/customizations", customization, CustomizationResponseDTO.class);
             }
 
-            // Reduce the stock quantity of the product
+            // Update product inventory by reducing stock quantity based on ordered amount
             ProductRequestDTO product = new ProductRequestDTO();
             // get productResponseDTO
             ProductResponseDTO productResponseDTO = restTemplate.getForObject(
@@ -195,6 +195,7 @@ public class CheckoutPageBean implements Serializable {
         }
 
 
+        // Clean up cart and redirect to confirmation page after successful order placement
         String deleteCartItemsUrl = "http://localhost:4000/cart-items/userId/" + userId;
 
 
